@@ -52,6 +52,13 @@ def detect(table):
     classes = ModuleScripts()
     classes.feed(read("index.html"))
     boot = find("game bootstrap", classes.sources, ["importEngine:", "gp-next-"])
+    identity_files = [key for key in items if re.fullmatch(r"assets/build-identity-[\w-]+\.js", key)]
+    if boot == "assets/game-B8Kg8fgS.js" or any(
+        "4d7a65b8f558edf650a044b5d3160f96c7e854fdf2e3a2fb27c670229dded011" in read(key)
+        for key in identity_files
+    ):
+        raise ValueError("0.16.15 Standard is on hold after a desktop security alert. "
+                         "此版暂缓发布，请使用 0.16.14 标准版或 0.16.24 标准版 / Lite。")
     main = find("native gameplay", [MAIN], ["PlayerProperties.ts", "PvZ2_PlayerProperties", "LevelDefinition"])
     engine_exports = read("cocos-js/cc.js")
     constructors = re.findall(r"""["']\./(_virtual_cc-[^/"']+\.js)["']""", engine_exports)

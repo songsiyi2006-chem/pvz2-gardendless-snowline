@@ -12,8 +12,11 @@ Snowline Garden 0.1 · Revision 2
 4. Enter or Escape in the source picker continues with your save. Starting fresh requires two explicit choices. Legacy saves stay in place. For different computers or game data folders, export and import through the original game's player screen.
 
 适配 Windows / Supported Windows releases
-0.16.24 Standard, 0.16.24 Lite, 0.16.15 Standard, 0.16.14 Standard
+0.16.24 Standard, 0.16.24 Lite, 0.16.14 Standard
 Lite 使用 AVIF 贴图，需要支持 AVIF 的 WebView2。Lite needs a WebView2 runtime with AVIF decoding.
+
+0.16.15 标准版暂缓支持。测试机上的 360 在启动前隔离了该版本生成的 EXE，目前无法确认是否误报。补丁会识别该原版并停止生成。
+0.16.15 Standard is on hold. During testing, 360 quarantined the generated executable before launch. The cause remains unconfirmed. The patch currently declines this base version.
 
 预检其他 Windows 构建 / Check another Windows build
 .\Snowline-Patch.exe --check "D:\Games\pvzge.exe"

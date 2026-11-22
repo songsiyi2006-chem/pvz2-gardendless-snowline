@@ -10,12 +10,14 @@ Select the image to download the two-minute gameplay trailer. All images and foo
 
 ## Install and continue your garden
 
-1. Use your own standalone Gardendless Windows executable. Supported releases are **0.16.24 Standard, 0.16.24 Lite, 0.16.15 Standard and 0.16.14 Standard**. Lite uses AVIF textures and requires a WebView2 runtime with AVIF decoding. [Official upstream releases](https://github.com/Gzh0821/pvzg_site/releases)
+1. Use your own standalone Gardendless Windows executable. Supported releases are **0.16.24 Standard, 0.16.24 Lite and 0.16.14 Standard**. Lite uses AVIF textures and requires a WebView2 runtime with AVIF decoding. [Official upstream releases](https://github.com/Gzh0821/pvzg_site/releases)
 2. Extract the whole archive. Run `Snowline-Patch.exe`, select your original EXE, and give the new game a fresh filename. The patch checks the scripts and resource layout on your computer. For another Windows build, run `.\Snowline-Patch.exe --check "D:\Games\pvzge.exe"` first. This validates the integration points. Gameplay on other builds needs its own playtest.
 3. **Launch the generated game to continue.** Within the same Windows account and game data directory, an existing beta 0.1 save opens automatically. A single recognizable legacy source is copied automatically, including all player slots. With saves from both the original and the earlier Snowline edition, the earlier Snowline save is preselected. You can select the original instead. Stage progress, plants, currency and the active slot carry over, as do earlier Snowline ranks, talents and equipment. Both source saves stay available in their original games.
 4. In the source picker, both Enter and Escape continue with the selected save. Starting fresh requires two explicit choices. The second screen focuses the button that returns to your saves. Without a previous save the game creates its starting garden. To move between computers or game data directories, export and import your save using the original game's player screen.
 
-All four versions have been launched on Windows. Tests covered choosing between two local save sources on Standard editions and loading AVIF textures and the main scene on Lite with WebView2 137. Verification used isolated player profiles.
+All three versions have been tested in Windows battles and with persisted saves. Tests covered choosing between two local save sources on Standard editions and loading AVIF textures and the main scene on Lite with WebView2 137. Verification used isolated player profiles.
+
+0.16.15 Standard is on hold. During testing, 360 quarantined the generated executable before launch. The cause remains unconfirmed. The patch currently declines this base version.
 
 ![Local saves with the earlier Snowline edition preselected](docs/images/inherit.jpg)
 ![Second confirmation with the return-to-saves button focused](docs/images/confirm-fresh.jpg)
