@@ -78,7 +78,7 @@ const gardenChallenge = (() => {
     read(definition?.Modules);
     const ids = [], included = seed.PlantIncludeList, excludes = new Set([...(seed.PlantExcludeList || []),...(seed.PlantBlackList || [])]);
     const append = id => {
-      if (gardenPlantIds.has(id) && id !== 'imitater' && !ids.includes(id) && ids.length < 7) ids.push(id);
+      if (gardenPlantIds.has(id) && !gardenCompatible.numeric(id) && id !== 'imitater' && !ids.includes(id) && ids.length < 7) ids.push(id);
     };
     for (const plant of seed.PresetPlantList || []) append(plant.PlantType);
     const permitted = id => !excludes.has(id) && (!included?.length || included.includes(id)) &&
@@ -123,6 +123,7 @@ const gardenChallenge = (() => {
   function deck() { return [...(prepared.get(play()?.component)?.deck || [])]; }
   const record=()=>prepared.get(play()?.component);
   function extraOptions(rec=record()){
+    gardenCompatible.refresh();
     return rec?gardenCatalogue.filter(p=>!rec.baseDeck.includes(p.id)&&gardenEconomy.owns(owner(),p.id)).map(p=>p.id):[];
   }
   function validExtras(rec,ids){
@@ -169,7 +170,7 @@ const gardenChallenge = (() => {
   }
   function rank(id){
     if(!active()||!gardenPlantIds.has(id))return null;
-    return sessions.get(play().component).extras.includes(id)?gardenEconomy.rank(id):6;
+    return gardenCompatible.numeric(id)||sessions.get(play().component).extras.includes(id)?gardenEconomy.rank(id):6;
   }
   // CardUIUpper reads both overlay nodes in its onLoad, as soon as its slot is parented.
   function extendOverlay(){
@@ -186,7 +187,7 @@ const gardenChallenge = (() => {
     return value === 1 || value === 2 ? value : 0;
   }
   function setMode(id, index) {
-    if (!canConfigure() || !deck().includes(id) || rank(id)!==6 || ![0,1,2].includes(index)) return false;
+    if (!canConfigure() || gardenCompatible.numeric(id) || !deck().includes(id) || rank(id)!==6 || ![0,1,2].includes(index)) return false;
     sessions.get(play().component).modes[id] = index;
     if (typeof gardenCombatStats !== 'undefined') gardenCombatStats.refreshMode(id);
     return true;

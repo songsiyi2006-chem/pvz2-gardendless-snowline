@@ -1,24 +1,34 @@
 # Snowline Garden · Public beta 0.1
 
-[简体中文](README.md) · [Windows patch](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1/Snowline-Patch-v0.1-Windows.zip) · [Bilingual illustrated field guide](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1/Snowline-Field-Guide-v0.1.pdf) · [Two-minute gameplay trailer, no audio](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1/Snowline-v0.1-Trailer.mp4)
+[简体中文](README.md) · [Windows patch](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1-r2/Snowline-Patch-v0.1-Windows.zip) · [Bilingual illustrated field guide](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1-r2/Snowline-Field-Guide-v0.1.pdf) · [Two-minute gameplay trailer, no audio](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1-r2/Snowline-v0.1-Trailer.mp4)
 
 **Plant progression and Snowline expeditions** are the heart of this free, unofficial Gardendless mod. Grow a plant into a different battlefield role, then take that build into familiar levels against armor, mortar crews and camouflaged attackers. The title card and public documentation are bilingual. The gameplay captures show the Chinese mod interface.
 
-[![Plant zombies on a Snowline battlefield. Select the image for the trailer.](docs/images/battle.jpg)](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1/Snowline-v0.1-Trailer.mp4)
+[![Plant zombies on a Snowline battlefield. Select the image for the trailer.](docs/images/battle.jpg)](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1-r2/Snowline-v0.1-Trailer.mp4)
 
 Select the image to download the two-minute gameplay trailer. All images and footage come from the released build. A separate demonstration profile provides the advanced plants and equipment shown here.
 
-## Start a fresh garden
+## Install and continue your garden
 
-1. Obtain the original Gardendless 0.16.24 standalone Windows EXE. The supported file is 1,211,438,592 bytes with SHA-256 `02f0bf4dcf17bc6afa09ce8e752ebd162dc6b06555dc981f56693fdb5e172624`. [Upstream project and download links](https://github.com/Gzh0821/pvzg_site)
-2. Extract the entire Windows patch ZIP, keeping the adjacent `mod` directory. Run `Snowline-Patch.exe`, select your original executable and choose a new destination. The patch checks the base and builds a separate playable executable on your computer.
-3. Start the new executable. The beta uses its own local save. Ancient Egypt's regular map progression and nine local plants are open at the start. Earn progress in the other worlds through play. Finishing the tutorial makes a one-time gift available with one world key, 1,000 diamonds, 100 rank points, 200,000 coins and one plant-choice card. No tester profile is distributed.
+1. Use your own standalone Gardendless Windows executable. Supported releases are **0.16.24 Standard, 0.16.24 Lite, 0.16.15 Standard and 0.16.14 Standard**. Lite uses AVIF textures and requires a WebView2 runtime with AVIF decoding. [Official upstream releases](https://github.com/Gzh0821/pvzg_site/releases)
+2. Extract the whole archive. Run `Snowline-Patch.exe`, select your original EXE, and give the new game a fresh filename. The patch checks the scripts and resource layout on your computer. For another Windows build, run `.\Snowline-Patch.exe --check "D:\Games\pvzge.exe"` first. This validates the integration points. Gameplay on other builds needs its own playtest.
+3. **Launch the generated game to continue.** Within the same Windows account and game data directory, an existing beta 0.1 save opens automatically. A single recognizable legacy source is copied automatically, including all player slots. With saves from both the original and the earlier Snowline edition, the earlier Snowline save is preselected. You can select the original instead. Stage progress, plants, currency and the active slot carry over, as do earlier Snowline ranks, talents and equipment. Both source saves stay available in their original games.
+4. In the source picker, both Enter and Escape continue with the selected save. Starting fresh requires two explicit choices. The second screen focuses the button that returns to your saves. Without a previous save the game creates its starting garden. To move between computers or game data directories, export and import your save using the original game's player screen.
+
+All four versions have been launched on Windows. Tests covered choosing between two local save sources on Standard editions and loading AVIF textures and the main scene on Lite with WebView2 137. Verification used isolated player profiles.
+
+![Local saves with the earlier Snowline edition preselected](docs/images/inherit.jpg)
+![Second confirmation with the return-to-saves button focused](docs/images/confirm-fresh.jpg)
+
+New profiles start with Ancient Egypt's regular stages and nine regional plants unlocked. Earn progress in other worlds through play. Finishing the tutorial unlocks a one-time gift of one world key, 1,000 diamonds, 100 rank points, 200,000 coins and one plant-choice card. The public patch contains no player profile.
 
 ![First-launch notice with a language switch and upstream credits](docs/images/notice-en.jpg)
 
 ## Grow a plant into a role
 
 Ordinary wins at difficulties I–IV award 3, 5, 8 and 12 rank points. Each of six rank increases adds 5% of base damage, 5% of base attack speed and 100% of base health. Potato Mine converts speed into shorter arming time. Sunflower converts damage into more sun per drop. Each permanent training step also gives the whole garden another 0.5% attack speed and 3% health. The seed tray displays effective rank. Imitater inherits the plant it copies.
+
+**Additional playable plants registered by a compatible game** use numerical progression. Each rank adds 10% of base damage, 10% of base attack speed and 200% of base health. Six ranks give **1.60× damage, 1.60× speed and 13× health** before garden-wide bonuses. Standard sun producers scale yield and production speed. These plants keep their native behavior at rank six. The three selectable skills and mastery paths below apply to plants with dedicated Snowline designs.
 
 ![The greenhouse and its plant-specific progression](docs/images/evolution.jpg)
 

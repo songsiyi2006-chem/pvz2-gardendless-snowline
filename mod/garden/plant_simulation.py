@@ -22,6 +22,7 @@ def apply(source):
     parts = re.split(r'(?=System\.register\("chunks:///_virtual/)',source)
     edits = {
         'Projectiles':[
+            ('gardenCombatStats.projectile(m,sourceRank,v._objdataOrg)','gardenCombatStats.projectile(m,sourceRank,v._objdataOrg,plantCode)'),
             ('plantShot=gardenCombatStats.launchingPlant,hostile=', 'plantShot=gardenCombatStats.launchingPlant,plantCode=gardenCombatStats.launchingCode,hostile='),
             ('v._gardenPlantShot=plantShot&&!hostile,', 'v._gardenPlantShot=plantShot&&!hostile,v._gardenSimulationId=v._gardenPlantShot?plantCode:null,v._gardenAlliedPlantId=!hostile&&!plantShot?plantCode:null,v._gardenAlliedShot=!!v._gardenAlliedPlantId,')],
         'GroundFiresManager':[('gardenPlantCritical.sourceClass(r)', 'gardenPlantCritical.sourceClass(r,i._gardenPlantFire)')],

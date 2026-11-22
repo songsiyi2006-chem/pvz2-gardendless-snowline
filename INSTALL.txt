@@ -1,30 +1,33 @@
-装甲雪线与庭院工坊｜公开测试版 0.1
-Snowline Garden | Public beta 0.1
+装甲雪线与庭院工坊 0.1 · 第 2 次发布
+Snowline Garden 0.1 · Revision 2
 
-1. 完整解压到可写文件夹，保留 Snowline-Patch.exe 旁边的 mod 文件夹。
-2. 双击 Snowline-Patch.exe，选择自己已有的 Gardendless Windows 0.16.24 原版。
-3. 选择一个全新的输出文件名。生成成功后运行该文件。
-4. 公开版使用独立存档。首图古埃及按版本设计预置，之后靠游戏进度取得资源。
+1. 完整解压补丁，保留同目录中的 mod 文件夹、compatibility.py、compatibility-data.json。
+2. 双击 Snowline-Patch.exe，选择自己的原版 Windows 游戏，并为输出选择新的文件名。
+3. 双击新游戏，默认保留进度。已有 0.1 档直接续玩；只有一个旧版来源自动复制全部栏位；两种来源并存时默认上一版雪线，可自行改选原版。
+4. 在选择来源时按 Enter、Esc 都会继承。全新开始须再次点击确认，旧档保留在原处。不同机器或不同数据目录可使用原游戏的玩家存档导出、导入功能。
 
-1. Extract the whole archive to a writable folder. Keep mod beside Snowline-Patch.exe.
-2. Run Snowline-Patch.exe and select your own original Gardendless 0.16.24 Windows game.
-3. Pick a new output filename. Launch the generated executable when the build is complete.
-4. The beta starts its own save. Ancient Egypt is the starting map. Earn later progress through play.
+1. Extract all files together, including mod, compatibility.py and compatibility-data.json.
+2. Open Snowline-Patch.exe, select your own Windows game and choose a new output filename.
+3. Launch the generated game. Existing 0.1 saves resume directly. A single legacy source is copied automatically with all its player slots. With two sources, earlier Snowline is selected by default. You can choose the original game instead.
+4. Enter or Escape in the source picker continues with your save. Starting fresh requires two explicit choices. Legacy saves stay in place. For different computers or game data folders, export and import through the original game's player screen.
 
-Original EXE SHA-256:
+适配 Windows / Supported Windows releases
+0.16.24 Standard, 0.16.24 Lite, 0.16.15 Standard, 0.16.14 Standard
+Lite 使用 AVIF 贴图，需要支持 AVIF 的 WebView2。Lite needs a WebView2 runtime with AVIF decoding.
+
+预检其他 Windows 构建 / Check another Windows build
+.\Snowline-Patch.exe --check "D:\Games\pvzge.exe"
+
+0.16.24 标准版原文件 / Reference original 0.16.24 Standard, SHA-256
 02f0bf4dcf17bc6afa09ce8e752ebd162dc6b06555dc981f56693fdb5e172624
-Official beta output SHA-256:
-6bdb3dde41338f6b5b95d3c764d2f8f5bbc84435f7d8544abd663ef66da1b72f
+同一标准版原文件生成的游戏 / Reference output for that Standard executable, SHA-256
+c55fd21894b0591d0c4d8d1eb70983e93c34a76c936141308d5eb3cc3f6cf048
 
-Repository / 仓库
-https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline
+中英图解指南、实机宣传片与校验值 / Illustrated guide, gameplay trailer and checksums
+https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/tag/v0.1-r2
 
-Guide and gameplay trailer / 中英图解指南与实机宣传片
-https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/tag/v0.1
-
-Gardendless creators / 感谢原作者
+感谢原作者 / Gardendless creators
 https://github.com/Gzh0821/pvzg_site
 
-免费非官方改版。补丁仅含改版代码、工具及运行所需组件，须自备原版游戏。
-Free, unofficial mod. The patch contains original mod code, tools and runtime components.
-Supply your own base game. See THIRD-PARTY.md and the licenses directory.
+免费非官方改版。补丁包含玩法代码、工具及运行组件。原版游戏由玩家自备。
+Free unofficial fan mod. Supply your own base game. See THIRD-PARTY.md and licenses.

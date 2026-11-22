@@ -17,7 +17,7 @@ function mountGardenOperations(root,tell){
   const talentTab=document.createElement('button');talentTab.type='button';talentTab.className='ops-talent-tab';talentTab.hidden=true;$('.ops-wallet').before(talentTab);
   const simLaunch=document.createElement('button');simLaunch.type='button';simLaunch.className='ops-launch ops-map-simulation';
   simLaunch.hidden=true;simLaunch.innerHTML=icon('cross',16)+'植物模拟';shade.before(simLaunch);
-  const catalog=gardenArsenal.catalog, byId=new Map(catalog.map(i=>[i.id,i])),plantById=new Map(gardenCatalogue.map(p=>[p.id,p]));
+  const catalog=gardenArsenal.catalog, byId=new Map(catalog.map(i=>[i.id,i])),plantById=gardenCompatible;
   const atlas=new Image();atlas.src=gardenArt.src;const thumbs=new Map(),portraits=new Map();
   let page='',owner=null,scene=null,filter='全部',selected='sniper',viewTier=0,viewForm='',plant='',busy=false,lastTrigger=null;
   let extraCount=0,extraDraft=['',''],trainingDraft={},tacticDraft={};
@@ -41,6 +41,7 @@ function mountGardenOperations(root,tell){
     shade.hidden=true;page='';owner=null;scene=null;if(lastTrigger?.isConnected&&!lastTrigger.hidden)lastTrigger.focus({preventScroll:true});
   }
   function open(next,trigger){
+    gardenCompatible.refresh();
     if(busy)return;
     lastTrigger=trigger;scene=currentScene();owner=gardenEconomy.profile();if(!owner)return;
     page=next;shade.hidden=false;book.classList.toggle('ops-ice',page==='challenge');book.classList.toggle('ops-simulation-book',page==='simulation');book.classList.toggle('ops-talents-book',page==='talents');book.classList.toggle('ops-loadout-book',page==='loadout');
@@ -321,7 +322,7 @@ function mountGardenOperations(root,tell){
       const level=baseDeck.includes(skillPlant)?trainingDraft[skillPlant]:gardenEconomy.mastery(skillPlant,slot);
       choices.append(masteryPanel(modes[slot],level));
     }else if(skillPlant){
-      const note=document.createElement('p');note.textContent=(plant==='imitater'?'模仿者复制的':'')+(plantById.get(skillPlant)?.name||'')+'为 '+rank+' 阶，升到六阶后可使用技能专精。';choices.append(note);
+      const note=document.createElement('p');note.textContent=(plant==='imitater'?'模仿者复制的':'')+(plantById.get(skillPlant)?.name||'')+'为 '+rank+' 阶。'+(gardenCompatible.numeric(skillPlant)?'每阶提高 10% 伤害、10% 行动速度和 200% 生命。':'升到六阶后可使用技能专精。');choices.append(note);
     }
     const loadout=document.createElement('div');loadout.className='ops-training-allocation';
     const caption=document.createElement('b');caption.textContent='七株专精名额';loadout.append(caption);

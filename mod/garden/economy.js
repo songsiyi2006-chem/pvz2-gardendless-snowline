@@ -4,7 +4,8 @@ const gardenBaseStats = (() => {
     attackSpeed: 1 + rank * .05,
     health: 1 + rank,
   }));
-  return rank => stages[Number.isInteger(rank) && rank >= 0 && rank <= 6 ? rank : 0];
+  const numeric=stages.map((_,rank)=>Object.freeze({damage:1+rank*.10,attackSpeed:1+rank*.10,health:1+rank*2}));
+  return (rank,id) => (gardenCompatible.numeric(id)?numeric:stages)[Number.isInteger(rank) && rank >= 0 && rank <= 6 ? rank : 0];
 })();
 
 const gardenEconomy = (() => {
@@ -37,24 +38,25 @@ const gardenEconomy = (() => {
     return player?.[field] ? layers(read(player)) : 0;
   }
   function mode(id) {
+    if(gardenCompatible.numeric(id))return 0;
     const index=profile()?.[field]?.modes?.[id];
     return index===1 || index===2 ? index : 0;
   }
   function chooseMode(id, index) {
     const p=profile();
-    if (!p || !gardenPlantIds.has(id) || rank(id)!==6 || !Number.isInteger(index) || index<0 || index>2) return false;
+    if (!p || gardenCompatible.numeric(id) || !gardenPlantIds.has(id) || rank(id)!==6 || !Number.isInteger(index) || index<0 || index>2) return false;
     const old=read(p);
     if(mode(id)===index)return true;
     return commit(p,{...old,modes:{...old.modes,[id]:index}});
   }
   function mastery(id,index,p=profile()){
-    if(!p||id==='imitater'||!gardenPlantIds.has(id)||!owns(p,id)||intrinsicRank(p,id)!==6||!Number.isInteger(index)||index<0||index>2)return 0;
+    if(!p||id==='imitater'||gardenCompatible.numeric(id)||!gardenPlantIds.has(id)||!owns(p,id)||intrinsicRank(p,id)!==6||!Number.isInteger(index)||index<0||index>2)return 0;
     const n=read(p).modeMastery?.[id]?.[index];
     return Number.isInteger(n)&&n>=1&&n<=4?n:0;
   }
   let buyingMastery=false;
   function buyMastery(id,index,expected,p=profile()){
-    if(buyingMastery||p!==profile()||!p||id==='imitater'||!gardenPlantIds.has(id)||!owns(p,id)||intrinsicRank(p,id)!==6||
+    if(buyingMastery||p!==profile()||!p||id==='imitater'||gardenCompatible.numeric(id)||!gardenPlantIds.has(id)||!owns(p,id)||intrinsicRank(p,id)!==6||
         !Number.isInteger(index)||index<0||index>2||!Number.isInteger(expected)||expected<0||expected>=gardenModeMastery.price.length||mastery(id,index,p)!==expected)return false;
     buyingMastery=true;
     try{
@@ -86,10 +88,12 @@ const gardenEconomy = (() => {
     return Number.isInteger(n) && n >= 0 && n <= 6 ? n : 0;
   }
   function owns(player, id) {
+    id=gardenCompatible.code(id);
     const plants=player?.plantProps;
     return (plants?.[id]?.progress ?? plants?.[gardenNativeIds.get(id)]?.progress ?? 0) > 0;
   }
   function rank(id) {
+    id=gardenCompatible.code(id);
     const p = profile();
     return p && id !== "imitater" && owns(p, id) ? intrinsicRank(p, id) : 0;
   }
@@ -106,6 +110,7 @@ const gardenEconomy = (() => {
     return true;
   }
   function buy(id, expectedRank) {
+    id=gardenCompatible.code(id);
     const p = profile();
     if (!p || id === "imitater" || !gardenPlantIds.has(id) || !owns(p,id)) return false;
     const old = read(p);
@@ -117,6 +122,7 @@ const gardenEconomy = (() => {
     return commit(p, {...old, points: old.points - cost, trainingLayers:total, ranks: {...old.ranks, [id]: r + 1}});
   }
   function trainAgain(id, expectedLayers) {
+    id=gardenCompatible.code(id);
     const p=profile();
     if (!p || !gardenPlantIds.has(id) || rank(id)!==6) return false;
     const old=read(p), count=layers(old),cost=prices[5];
@@ -159,7 +165,7 @@ const gardenEconomy = (() => {
 
 const gardenTrainingSpeed = .005;
 function gardenEffectiveStats(rank, code, previewMode) {
-  const personal=gardenBaseStats(rank);
+  const personal=gardenBaseStats(rank,code);
   const layers=gardenEconomy.trainingCount();
   const id=(typeof forms!=='undefined' && forms.get(code)) || code;
   const stance=rank===6 && id ? gardenModes.speedFactor(id,previewMode??gardenChallenge.equippedMode(id)??gardenEconomy.mode(id)) : 1;

@@ -2,11 +2,12 @@
 
 ## 简体中文
 
-先完整解压 Windows 补丁。运行补丁前，可以直接编辑旁边的 `mod`。保留好原始 0.16.24 EXE，每次改完都用补丁生成一个新文件。游戏会继续使用你本机的 0.1 存档。若要进行独立平衡测试，建议在另一个 Windows 用户中开始。
+先完整解压 Windows 补丁。运行补丁前，可以直接编辑旁边的 `mod`。保留好支持版本的原始 EXE，每次改完都用补丁生成一个新文件。游戏会继续使用你本机的 0.1 存档。若要进行独立平衡测试，建议在另一个 Windows 用户中开始。
 
 | 想改什么 | 从哪里读起 |
 |---|---|
 | 进阶价格、胜利给点、全队培养 | [economy.js](mod/garden/economy.js) |
+| 新版本新增植物的识别与数值进阶 / Additional plant detection | [compatible-plants.js](mod/garden/compatible-plants.js)、[stats.js](mod/garden/stats.js) |
 | 每株植物的六阶模式和专精 | [modes.js](mod/garden/modes.js)、[mode-mastery.js](mod/garden/mode-mastery.js) |
 | 天赋树和前置节点 | [talents.js](mod/garden/talents.js) |
 | 挑战波次、旗距、增援名额 | [challenge-core.js](mod/garden/challenge-core.js) |
@@ -33,4 +34,4 @@ python -m pip install -r requirements.txt
 python patcher.py "D:\Games\pvzge-0.16.24.exe" "D:\Games\Snowline-custom.exe"
 ```
 
-The official 0.1 game generated from the unmodified patch has SHA-256 `6bdb3dde41338f6b5b95d3c764d2f8f5bbc84435f7d8544abd663ef66da1b72f`. A customized build normally has a different hash.
+The official 0.1 revision 2 game generated from the 0.16.24 Standard Windows executable has SHA-256 `c55fd21894b0591d0c4d8d1eb70983e93c34a76c936141308d5eb3cc3f6cf048`. A customized build normally has a different hash.

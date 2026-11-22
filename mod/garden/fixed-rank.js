@@ -79,5 +79,6 @@ const gardenFixed = (() => {
 })();
 
 function gardenBattleRank(id) {
+  id=gardenCompatible.code(id);
   return gardenChallenge.rank(id) ?? (gardenFixed.inLevel() ? 5 : gardenEconomy.rank(id));
 }

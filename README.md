@@ -1,24 +1,34 @@
 # 装甲雪线与庭院工坊 · 公开测试版 0.1
 
-[English](README.en.md) · [下载 Windows 补丁](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1/Snowline-Patch-v0.1-Windows.zip) · [中英图解指南](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1/Snowline-Field-Guide-v0.1.pdf) · [两分钟实机宣传片 · 无音轨](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1/Snowline-v0.1-Trailer.mp4)
+[English](README.en.md) · [下载 Windows 补丁](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1-r2/Snowline-Patch-v0.1-Windows.zip) · [中英图解指南](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1-r2/Snowline-Field-Guide-v0.1.pdf) · [两分钟实机宣传片 · 无音轨](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1-r2/Snowline-v0.1-Trailer.mp4)
 
 这是一款基于 PVZ2 Gardendless 的免费非官方玩法改版。**进阶**决定一株植物在阵容里能做什么，**雪线挑战**检验这套阵容能否应对护甲、迷彩和迫击炮。可以先在普通冒险攒进阶点，再回到熟悉的地图，尝试完全不同的打法。
 
-[![0.1 实机，植物僵尸与挑战战场，点击下载宣传片](docs/images/battle.jpg)](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1/Snowline-v0.1-Trailer.mp4)
+[![0.1 实机，植物僵尸与挑战战场，点击下载宣传片](docs/images/battle.jpg)](https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/download/v0.1-r2/Snowline-v0.1-Trailer.mp4)
 
 点击画面可下载两分钟实机短片。图片和视频均取自 0.1 发行文件。为展示高阶技能与装备，拍摄使用独立的演示阵容。
 
-## 从空白档开始
+## 安装补丁，继续原来的花园
 
-1. 准备 Gardendless 的原始 Windows 0.16.24 单文件版。支持的原版文件大小为 1,211,438,592 字节，SHA-256 为 `02f0bf4dcf17bc6afa09ce8e752ebd162dc6b06555dc981f56693fdb5e172624`。[原项目与下载入口](https://github.com/Gzh0821/pvzg_site)
-2. 下载并完整解压补丁 ZIP。双击 `Snowline-Patch.exe`，先选择原版 EXE，再选择一个新文件名。补丁会校验输入，在本机生成独立的游戏 EXE。旁边的 `mod` 文件夹也要一并解压。
-3. 运行新生成的 EXE。0.1 有独立的本地存档。古埃及首图关卡和九株首图植物已经开放，其余世界按正常进度游玩。完成新手引导可领时空钥匙、1,000 钻石、100 进阶点、200,000 金币和一张可留存的植物自选卡。公开包里没有个人账号数据。
+1. 准备自己下载的 Gardendless Windows 单文件游戏。目前已适配 **0.16.24 标准版、0.16.24 Lite、0.16.15 标准版、0.16.14 标准版**。Lite 使用 AVIF 贴图，需要能解码 AVIF 的 WebView2 运行时。[原项目历史版本](https://github.com/Gzh0821/pvzg_site/releases)
+2. 完整解压补丁，双击 `Snowline-Patch.exe`，选择原版 EXE，再为生成的游戏选择新文件名。补丁会在本机检查游戏脚本和资源布局，原版可继续运行。对其他 Windows 构建，可运行 `.\Snowline-Patch.exe --check "D:\Games\pvzge.exe"` 先做兼容性预检。预检核对挂载点，实际游玩仍需该版本的实机验证。
+3. **直接运行生成的游戏即可续玩。** 在同一个 Windows 用户、同一游戏数据目录内，已有 0.1 存档会直接打开。只有一个可识别旧档来源时，自动复制其中的全部玩家栏位。原版与上一版雪线都有存档时，默认选中上一版雪线，也可以主动选择原版。关卡、植物、钱包和当前玩家栏位随档继承，雪线档还保留升阶、天赋与装备。旧版存档保留在原处。
+4. 双来源选择界面的 Enter 和 Esc 都会继续继承。手动点“全新开始”还需再次确认，返回按钮默认获得焦点。没有旧档的玩家会获得本版起始花园。跨电脑或不同游戏数据目录，可通过原游戏的玩家界面导出和导入存档。
+
+以上四个版本都在 Windows 上实际启动过。标准版验证了从两个来源选择存档，Lite 另验证了在 WebView2 137 下加载贴图并进入主场景。本次测试使用独立玩家档。
+
+![发现两个来源时，默认选中上一版雪线的全部玩家栏位](docs/images/inherit.jpg)
+![选择全新开始后，还可按默认焦点返回保留进度](docs/images/confirm-fresh.jpg)
+
+新档预置古埃及常规关卡和九株本世界植物。其余世界按游戏进度开放。完成引导后可领一把时空钥匙、1,000 钻石、100 进阶点、200,000 金币和一张植物自选卡。发行包内没有玩家个人存档。
 
 ![首次启动的双语公告](docs/images/notice.jpg)
 
 ## 培养一株真正有分工的植物
 
 普通关四档胜利分别给 3、5、8、12 进阶点。六次进阶每次为本株增加相当于基础值 5% 的伤害、5% 的攻速和 100% 的生命。土豆地雷把攻速换成更快就绪，向日葵把伤害换成更高的单颗阳光产量。每次永久培养还给全队累加 0.5% 攻速、3% 生命。卡槽标出实际上阵的阶数，模仿者跟随复制对象。
+
+**其他版本增加的可种植植物**会自动进入通用进阶。每升一阶增加基础伤害 10%、基础攻速 10%、基础生命 200%，按原始值逐阶相加。六阶本株因此达到 **1.60 倍伤害、1.60 倍攻速、13 倍生命**，全园培养另算。标准产阳光行为沿用产量和产速换算。这类植物保留原生行为，六阶采用纯数值强化。下文的三选招式与专精适用于本补丁单独设计的植物。
 
 ![升阶温室与植物机制](docs/images/evolution.jpg)
 

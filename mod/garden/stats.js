@@ -45,6 +45,7 @@ const gardenCombatStats = (() => {
     return field === 'attackSpeed' ? n / stats.attackSpeed : n * stats[field];
   }
   function setPlant(body, code, id) {
+    code=gardenCompatible.code(code??id);
     const rank = ownedRank(code,id);
     body._gardenCombatRank = rank;
     body._gardenCombatStats = gardenEffectiveStats(rank,code);
@@ -129,9 +130,9 @@ const gardenCombatStats = (() => {
     try { return target[method](...args); }
     finally { launchingRank = previous;launchingPlant=previousPlant;launchingCode=previousCode; }
   }
-  function projectile(props, rank, nativeDefaults) {
+  function projectile(props, rank, nativeDefaults,code) {
     if (!rank) return props;
-    const factor = gardenBaseStats(rank).damage;
+    const factor = gardenBaseStats(rank,code).damage;
     function copy(obj) {
       const value = {...obj};
       for (const [key,n] of Object.entries(obj)) {

@@ -13,32 +13,41 @@ BASE_BYTES = 1211438592
 DEFAULT_OUTPUT = 'Snowline-Garden-v0.1.exe'
 HOME_DIR = Path(sys.executable if getattr(sys,'frozen',False) else __file__).resolve().parent
 
-def install(base, output):
+def install(base, output=None):
     mod = HOME_DIR / 'mod'
-    source, destination = base.resolve(), output.resolve()
-    if source == destination or destination.exists():
+    source, destination = base.resolve(), output.resolve() if output is not None else None
+    if destination is not None and (source == destination or destination.exists()):
         raise ValueError('请选择一个尚不存在的新文件。Choose a new output file. Your original will be kept.')
-    if not source.is_file() or source.stat().st_size != BASE_BYTES:
-        raise ValueError('需要原始 Windows 0.16.24 EXE。Select the original Windows 0.16.24 executable.')
+    if not source.is_file() or source.stat().st_size < 65536:
+        raise ValueError('请选择支持的 Windows 原版游戏。Select a supported Windows game executable.')
     with source.open('rb') as incoming:
-        if hashlib.file_digest(incoming,'sha256').hexdigest() != BASE_SHA256:
-            raise ValueError('原版文件 SHA-256 不匹配。The base SHA-256 does not match the supported release.')
+        if incoming.read(2)!=b'MZ':raise ValueError('Windows PE executable expected.')
     if not (mod/'garden/assemble.py').is_file():
         raise FileNotFoundError('请将压缩包全部解压并保留 mod 文件夹。Extract the entire archive including its mod folder.')
-    sys.path[:0] = [str(mod/'garden'),str(mod/'format'),str(mod/'installed')]
+    sys.path[:0] = [str(HOME_DIR),str(mod/'garden'),str(mod/'format'),str(mod/'installed')]
     import assemble, fixed_rank
+    import compatibility
     from assets import AssetTable
     from build import add_assets
     table = AssetTable(source)
     try:
         with TemporaryDirectory(prefix='snowline-build-') as tmp:
+            mapping=compatibility.detect(table)
+            by_installed={actual:canonical for canonical,actual in mapping.items()}
             original=Path(tmp)/'original'
             def extract(key):
-                target=original/key.lstrip('/')
+                stripped=key.lstrip('/')
+                target=original/by_installed.get(stripped,stripped)
                 target.parent.mkdir(parents=True,exist_ok=True)
-                target.write_bytes(table.decompress(key))
+                raw=table.decompress(key)
+                role=by_installed.get(stripped)
+                if role==compatibility.MAIN:
+                    raw=compatibility.prepare_main(raw.decode('utf8')).encode('utf8')
+                elif role==compatibility.PRELOAD:
+                    raw=compatibility.prepare_preload(raw.decode('utf8')).encode('utf8')
+                target.write_bytes(raw)
                 return target
-            assets=set('/'+f for f in (*assemble.fairplay.ASSETS,assemble.speed.ENGINE))
+            assets={'/'+p for p in mapping.values()}
             assets.update(k for k in table.items if k.startswith('/assets/') and k.count('/')==2 and k.endswith('.js'))
             for k in assets:extract(k)
             config_file=extract('/assets/resources/config.json')
@@ -54,12 +63,29 @@ def install(base, output):
                         extract('/assets/resources/import/'+pack[:2]+'/'+pack+'.json')
             assemble.SOURCE=original
             assemble.REPLACEMENTS=Path(tmp)/'changes'
+            assemble.compat_boot=compatibility.rewrite_boot
+            portrait=json.loads((mod/'format/portraits.json').read_text('utf8'))['src']
+            variants=[k for k in table.items if k.rsplit('.',1)[0]==portrait.rsplit('.',1)[0] and k.lower().endswith(('.png','.webp','.avif','.jpg'))]
+            if portrait not in variants and len(variants)!=1:
+                raise ValueError('Could not identify the seed portrait texture for this build.')
+            assemble.portrait_source=portrait if portrait in variants else variants[0]
             replacements=assemble.build(regenerate=False)
+            actual_replacements=Path(tmp)/'installed-changes'
+            for changed in replacements.rglob('*'):
+                if not changed.is_file():continue
+                relative=changed.relative_to(replacements).as_posix()
+                installed=mapping.get(relative,relative)
+                if '/'+installed not in table.items:raise ValueError('Missing installed resource '+installed)
+                final_file=actual_replacements/installed
+                final_file.parent.mkdir(parents=True,exist_ok=True)
+                changed.replace(final_file)
+            if destination is None:
+                return 'Compatible hooks / 已匹配全部改版挂载点: '+source.name
             destination.parent.mkdir(parents=True,exist_ok=True)
             # Stage next to the destination for an atomic, no-overwrite rename on Windows.
             with TemporaryDirectory(dir=destination.parent,prefix='.snowline-') as staging:
                 built=Path(staging)/DEFAULT_OUTPUT
-                add_assets(source,replacements,built)
+                add_assets(source,actual_replacements,built)
                 if os.name=='nt':os.rename(built,destination)
                 else:os.link(built,destination)
     finally:
@@ -86,7 +112,7 @@ def pick_file(save, title, initial=''):
 def gui():
     popup=ctypes.windll.user32.MessageBoxW
     try:
-        base=pick_file(False,'选择原版 Gardendless 0.16.24 / Select original game')
+        base=pick_file(False,'选择支持的 Gardendless Windows 版本 / Select a supported base game')
         if not base:return
         target=pick_file(True,'保存独立测试版 / Choose a new output',str(base.parent/DEFAULT_OUTPUT))
         if not target:return
@@ -100,6 +126,9 @@ if __name__=='__main__':
     else:
         parser=argparse.ArgumentParser(description=__doc__)
         parser.add_argument('original',type=Path)
-        parser.add_argument('output',type=Path)
+        parser.add_argument('output',type=Path,nargs='?')
+        parser.add_argument('--check',action='store_true',help='validate game compatibility without writing an executable')
         parsed=parser.parse_args()
+        if parsed.check and parsed.output:parser.error('--check takes no output file')
+        if not parsed.check and not parsed.output:parser.error('provide an output file or use --check')
         print(install(parsed.original,parsed.output))

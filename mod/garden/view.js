@@ -74,6 +74,14 @@ function mountGarden() {
   let visibleRows=[];
   const cache=new Map();
   function thumb(id) {
+    const plan=gardenCompatible.get(id);
+    if(plan?.numericOnly&&!gardenArt.rects[id]&&!cache.has(id)){
+      if(plan.card!==id&&gardenArt.rects[plan.card])return thumb(plan.card);
+      const c=document.createElement('canvas');c.width=c.height=76;
+      const t=c.getContext('2d'),g=t.createLinearGradient(12,62,62,12);g.addColorStop(0,'#327255');g.addColorStop(1,'#a6cc76');
+      t.fillStyle=g;t.beginPath();t.moveTo(16,61);t.bezierCurveTo(8,30,37,18,64,13);t.bezierCurveTo(61,42,46,68,16,61);t.fill();
+      t.strokeStyle='#d0deb2';t.lineWidth=2;t.beginPath();t.moveTo(12,66);t.quadraticCurveTo(35,45,53,24);t.moveTo(27,51);t.lineTo(26,36);t.moveTo(36,41);t.lineTo(48,39);t.stroke();cache.set(id,c.toDataURL());
+    }
     if(!cache.has(id)&&atlas.complete&&atlas.naturalWidth){
       const c=document.createElement("canvas"),r=gardenArt.rects[id];if(!r)return "";
       c.width=c.height=76;const t=c.getContext("2d"),f=Math.min(72/r[2],72/r[3]);const w=f*r[2],h=f*r[3];t.drawImage(atlas,...r,(76-w)/2,(76-h)/2,w,h);cache.set(id,c.toDataURL());
@@ -90,6 +98,7 @@ function mountGarden() {
   }
   gardenEconomy.onNotice(tell);
   function filterRows() {
+    gardenCompatible.refresh();
     const q=$(".find input").value.trim().toLowerCase();
     return gardenCatalogue.filter(p=>(!chooser||eligible(p.id))&&(!ownedOnly||gardenEconomy.owns(owner,p.id))&&
       (!q||[displayName(p),p.id,worlds[p.world],gardenHome[p.id]].filter(Boolean).some(v=>v.toLowerCase().includes(q))));
@@ -132,10 +141,10 @@ function mountGarden() {
     displayedRank=rank;
     $(".plant-title h2").textContent=displayName(p);$(".origin").textContent=gardenHome[p.id]||worlds[p.world]||p.world;
     const copiesRank=p.id==="imitater";
-    $(".detail").classList.toggle('with-modes',preview===5&&!copiesRank);
+    $(".detail").classList.toggle('with-modes',preview===5&&!copiesRank&&!p.numericOnly);
     $(".rank").textContent=has?(copiesRank?"随目标":rank?words[rank]+"阶":"未升阶"):"未解锁";
     for(const selector of [".steps",".base-stats",".actions"])$(selector).hidden=copiesRank||chooser;
-    modeBox.hidden=copiesRank||preview!==5;
+    modeBox.hidden=copiesRank||p.numericOnly||preview!==5;
     convert.hidden=true;
     if(copiesRank){
       skillValues.open=false;skillValues.hidden=true;
@@ -190,7 +199,7 @@ function mountGarden() {
       buy.textContent="继续培养 · "+cost+" 点";buy.disabled=points<cost;
       hint.textContent="每次增加一层全队加成，可重复培养。";
     }
-    else if(rank===6){buy.textContent="已掌握";hint.textContent="当前模式 · "+gardenModes.options(p.id)[gardenEconomy.mode(p.id)].name}
+    else if(rank===6){buy.textContent="已掌握";hint.textContent=p.numericOnly?"六阶基础强化已生效。":"当前模式 · "+gardenModes.options(p.id)[gardenEconomy.mode(p.id)].name}
     else if(preview<rank){buy.textContent="已掌握";hint.textContent="该阶效果已生效。"}
     else if(preview>rank){buy.textContent="需逐阶解锁";hint.textContent="下一次可升至"+words[rank+1]+"阶。"}
     else{buy.textContent="升至"+words[rank+1]+"阶 · "+cost+" 点";hint.textContent=points<cost?"还差 "+(cost-points)+" 点":"升阶后保留之前各阶效果。"}
@@ -205,7 +214,7 @@ function mountGarden() {
     return !l?.gameStarted&&c?.laid&&c.seedChooser?.node?.activeInHierarchy&&!gardenFixed.inLevel()?c:null;
   }
   function eligible(id){
-    if(gardenEconomy.rank(id)!==6)return false;
+    if(gardenCompatible.numeric(id)||gardenEconomy.rank(id)!==6)return false;
     const cards=chooserCards();
     return !!cards?.seedChooser?.CFs?.some(f=>!f.ca?.disallowed&&f.Type===id);
   }
@@ -215,7 +224,7 @@ function mountGarden() {
     if(!p||!scene)return null;
     if(scene!=="inGameScene")return 'outside';
     const c=chooserCards();
-    return c?.seedChooser.CFs?.some(f=>!f.ca?.disallowed&&gardenEconomy.rank(f.Type)===6)?'chooser':null;
+    return c?.seedChooser.CFs?.some(f=>!f.ca?.disallowed&&!gardenCompatible.numeric(f.Type)&&gardenEconomy.rank(f.Type)===6)?'chooser':null;
   }
   function close() {$(".shade").hidden=true;$(".rule").hidden=true;$(".balance button").setAttribute("aria-expanded","false");if(focusBefore?.isConnected)focusBefore.focus({preventScroll:true});if(!$(".entry").hidden)$(".entry").focus({preventScroll:true})}
   function sync() {

@@ -42,6 +42,8 @@ def wrapper(battle):
     catalogue = read(source/'catalog.js').replace('export const catalogue', 'const catalogue')
     catalogue = catalogue.replace('期间受到的升阶技能的直接伤害','期间受到的升阶技能直接伤害').replace('适格目标','可选目标').replace('；','。')
     art = read_json(WORK/'format/portraits.json')
+    if globals().get('portrait_source'):
+        art['src']=portrait_source
     levels = read_json(SOURCE/'assets/resources/config.json')['paths'].values()
     stage_ids = sorted({r[0][7:] for r in levels if r[0].startswith('levels/')})
     egypt = read_json(WORK/'installed/egypt-manifest.json')
@@ -53,9 +55,11 @@ def wrapper(battle):
         if re.search(r'^\s*(import|export)\b',combat,re.M):raise ValueError('Unexpected module header in combat runtime')
     else:
         combat = 'async function install(){}'
-    return '\n'.join([read(HERE/'beta-notice.js'),catalogue,'const gardenCatalogue = catalogue;',
+    internals=read_json(source/'native-internals.json')
+    return '\n'.join([read(HERE/'beta-notice.js'),catalogue,'const gardenCatalogue = [...catalogue];',
         'const gardenNativeIds = new Map(catalogue.map(p=>[p.id,p.nativeId]));',
         'const gardenPlantIds = new Set(gardenNativeIds.keys());',
+        read(HERE/'compatible-plants.js').replace('/*NATIVE_INTERNALS*/[]',literal(internals)),
         'const gardenArt = '+literal(art)+';',
         'const gardenHome = '+literal(homes)+';',
         'const gardenLevelIds = new Set('+ literal(stage_ids) +');',
@@ -102,7 +106,7 @@ def attach(source, helpers):
                 'Z.gameStart(),this.gameStarted=!0,gardenEconomy.start(this,ta,me.currentPlayer),A.component.gameStart()')
     source=once(source,'this.saveDangerroomMiniGamePlayerProperties(!0),me.savePP()}},c.spawnPrize',
                 'this.saveDangerroomMiniGamePlayerProperties(!0),me.savePP(),gardenEconomy.win(this)}},c.spawnPrize')
-    # Never migrate the desktop player's existing slots into the public beta.
+    # The desktop save chooser inherits players and settings together before Cocos starts.
     source=once(source,'var e=w.localStorage.getItem(Bi);if(e==null){e=w.localStorage.getItem("PvZ2_Settings");if(e!=null)w.localStorage.setItem(Bi,e)}var i=JSON.parse(e);',
                 'var e=w.localStorage.getItem(Bi),i=JSON.parse(e);')
     source=source.replace('PvZ2_Greenhouse_Settings_v1','PvZ2_Snowline_PublicBeta_01_Settings')
@@ -120,6 +124,7 @@ def attach(source, helpers):
       launched=true;
       clearInterval(greenhouseInit);
       try{
+        gardenCompatible.refresh();
         await install(null,gardenBattleRank);
         await gardenArsenal.install();
         gardenChallengeArmorArt.install();
@@ -142,10 +147,18 @@ def build(preview=False, regenerate=True):
         if OLD_KEY in read(f):changes.add(f.relative_to(SOURCE).as_posix())
     helpers=wrapper(not preview)
     for path in sorted(changes):
-        code=fairplay.transform(path,read(SOURCE/path)).replace(OLD_KEY,NEW_KEY)
+        raw=read(SOURCE/path)
+        if path==fairplay.BOOT and globals().get('compat_boot'):
+            dst=target/path
+            dst.parent.mkdir(parents=True,exist_ok=True)
+            dst.write_text(compat_boot(raw,read(HERE/'save-choice.js')),encoding='utf8',newline='\n')
+            continue
+        code=fairplay.transform(path,raw).replace(OLD_KEY,NEW_KEY)
         if path==fairplay.MAIN:code=attach(code,helpers)
         if path==speed.ENGINE:code=speed.timestep(code)
         code=code.replace('PvZ2_Greenhouse_', 'PvZ2_Snowline_PublicBeta_01_')
+        if path==fairplay.BOOT:
+            code=fairplay.once(code,'Wr();export{',read(HERE/'save-choice.js')+'\nstartSnowlineWithProgress(Wr);export{')
         dst=target/path
         dst.parent.mkdir(parents=True,exist_ok=True)
         dst.write_text(code,encoding='utf8',newline='\n')

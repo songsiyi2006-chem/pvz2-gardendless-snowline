@@ -1,8 +1,7 @@
 const gardenStarterGift = (() => {
   const field='gardendlessGreenhouseV1';
   const bundle=Object.freeze({worldkey:1,gem:1000,points:100,coin:200000,cards:1});
-  const candidates=gardenCatalogue.filter(p=>!p.id.startsWith('powerplant_'));
-  const byId=new Map(candidates.map(p=>[p.id,p]));
+  const candidate=p=>!!p&&!p.id.startsWith('powerplant_');
   const busy=new WeakSet();
   const mod=name=>window.System?.get('chunks:///_virtual/'+name+'.ts');
   function current(){
@@ -20,7 +19,8 @@ const gardenStarterGift = (() => {
       redeemed:receipt?.redeemed||null};
   }
   function choices(p=current()){
-    return p?candidates.filter(plant=>!gardenEconomy.owns(p,plant.id)):[];
+    gardenCompatible.refresh();
+    return p?gardenCatalogue.filter(plant=>candidate(plant)&&!gardenEconomy.owns(p,plant.id)):[];
   }
   function transact(p,build){
     if(!p||p!==current()||busy.has(p))return false;
@@ -47,8 +47,8 @@ const gardenStarterGift = (() => {
   }
   function redeem(id,p=current()){
     return transact(p,()=>{
-      const plant=byId.get(id);
-      if(!plant||state(p).cards!==1||gardenEconomy.owns(p,id))return null;
+      const plant=gardenCompatible.get(id);
+      if(!candidate(plant)||state(p).cards!==1||gardenEconomy.owns(p,id))return null;
       const garden=gardenEconomy.read(p),props=p.plantProps||{};
       const old=props[id]??props[plant.nativeId];
       const record={costumes:[],costume:-1,tutorialLevel:0,boost:0,medal:false,...old,progress:2};

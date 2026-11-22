@@ -73,6 +73,11 @@ def apply(source):
         match=re.match(r'System\.register\("chunks:///_virtual/([^"]+)\.ts"',part)
         if not match:continue
         for a,b,count in edits.pop(match[1],[]):part=change(part,a,b,count)
+        # A content extension may introduce its own plant class while still paying
+        # out sunlight via the game's shared Sunflower producer.
+        if match[1] not in ('Sunflower','ShineVine','SolarTomato') and re.search(r'\w+\("[\w$]*Plant",',part):
+            for alias in re.findall(r'\b([\w$]+)=[\w$]+\.sunflower\b',part.partition('execute:function()')[0]):
+                part=re.sub(r'(?<![\w$.])'+re.escape(alias)+r'\.produceSun\(','gardenFunctional.nativeSun(this,'+alias+',',part)
         parts[i]=part
     if edits:raise ValueError(f'Functional stat modules missing: {list(edits)}')
     return (HERE/'functional.js').read_text(encoding='utf8')+'\n'+''.join(parts)

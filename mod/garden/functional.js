@@ -45,6 +45,7 @@ const gardenFunctional = (() => {
   }
   function statLabels(raw) {
     const id=owner(raw),labels={};
+    if(gardenCompatible.get(id)?.sunProducer)return {damage:'单颗阳光',attackSpeed:'产阳速度'};
     if(id==='marigold')Object.assign(labels,{damage:'产出强度',attackSpeed:'产出速度'});
     else if(id==='powerlily')Object.assign(labels,{damage:'叶绿素产额',attackSpeed:'回转速度'});
     else if(['banana','missiletoe','bowlingbulb'].includes(id))Object.assign(labels,{damage:'弹丸威力',attackSpeed:'装填速度'});
@@ -69,7 +70,7 @@ const gardenFunctional = (() => {
   }
   function cardTime(base,code) {
     const id=owner(code);
-    if(!Number.isFinite(base)||!vitality(id)||!get('levelController')?.LevelPlay?.component)return base;
+    if(!Number.isFinite(base)||(!vitality(id)&&!gardenCompatible.numeric(id))||!get('levelController')?.LevelPlay?.component)return base;
     const stats=gardenEffectiveStats(gardenBattleRank(id),id);
     return base/(stats.attackSpeed*(oneUse.has(id)?1+.10*(stats.health-1):1));
   }
@@ -88,6 +89,9 @@ const gardenFunctional = (() => {
     const previous=sunScale;
     sunScale=(source?._gardenCombatStats?.damage||source?._gardenSunYield||1)*simulation(source);
     try{return utility.produceSun(...args);}finally{sunScale=previous;}
+  }
+  function nativeSun(source,utility,...args){
+    return gardenCompatible.numeric(source?.Plant_Type)?sun(source,utility,...args):utility.produceSun(...args);
   }
   function resetDrop(drop) {
     if(denomination.has(drop))drop.value=denomination.get(drop);else denomination.set(drop,drop.value);
@@ -162,6 +166,6 @@ const gardenFunctional = (() => {
     const foe=cm.ZombiePool.pool().filter(z=>living(z)&&Math.abs(z.lIndex-cell.lIndex)<=1&&(recruiting.has(id)||Math.abs(z.cIndex-cell.cIndex)<=2)).sort((a,b)=>Math.abs(a.cIndex-cell.cIndex)-Math.abs(b.cIndex-cell.cIndex))[0];
     if(foe)hit(foe,35*st.damage*simulation(body),cm);
   }
-  return {kind,property,cardTime,castAnimation,summary,statLabels,reset,deploy,tick,sun,resetDrop,priceDrop,coin,foodCount,
+  return {kind,property,cardTime,castAnimation,summary,statLabels,reset,deploy,tick,sun,nativeSun,resetDrop,priceDrop,coin,foodCount,
     get sunScale(){return sunScale;}};
 })();

@@ -79,7 +79,7 @@ function gardenUpdateSeedBadge(card) {
   // has no target, so its badge explains the inheritance instead of showing a number.
   const pending = type === "imitater";
   const rank = gardenFixed.inLevel() ? 5 : pending ? 7 : typeof resolve === "function"
-    ? (resolve(type,card.ID,card.isImitater,gardenBattleRank)?.rank ?? 0)
+    ? (resolve(type,card.ID,card.isImitater,gardenBattleRank)?.rank ?? gardenBattleRank(type))
     : gardenBattleRank(type);
   if (!badge) {
     badge = new cc.Node("GreenhouseRank");
