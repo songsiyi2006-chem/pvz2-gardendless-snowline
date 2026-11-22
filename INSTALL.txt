@@ -1,0 +1,30 @@
+装甲雪线与庭院工坊｜公开测试版 0.1
+Snowline Garden | Public beta 0.1
+
+1. 完整解压到可写文件夹，保留 Snowline-Patch.exe 旁边的 mod 文件夹。
+2. 双击 Snowline-Patch.exe，选择自己已有的 Gardendless Windows 0.16.24 原版。
+3. 选择一个全新的输出文件名。生成成功后运行该文件。
+4. 公开版使用独立存档。首图古埃及按版本设计预置，之后靠游戏进度取得资源。
+
+1. Extract the whole archive to a writable folder. Keep mod beside Snowline-Patch.exe.
+2. Run Snowline-Patch.exe and select your own original Gardendless 0.16.24 Windows game.
+3. Pick a new output filename. Launch the generated executable when the build is complete.
+4. The beta starts its own save. Ancient Egypt is the starting map. Earn later progress through play.
+
+Original EXE SHA-256:
+02f0bf4dcf17bc6afa09ce8e752ebd162dc6b06555dc981f56693fdb5e172624
+Official beta output SHA-256:
+6bdb3dde41338f6b5b95d3c764d2f8f5bbc84435f7d8544abd663ef66da1b72f
+
+Repository / 仓库
+https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline
+
+Guide and gameplay trailer / 中英图解指南与实机宣传片
+https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/tag/v0.1
+
+Gardendless creators / 感谢原作者
+https://github.com/Gzh0821/pvzg_site
+
+免费非官方改版。补丁仅含改版代码、工具及运行所需组件，须自备原版游戏。
+Free, unofficial mod. The patch contains original mod code, tools and runtime components.
+Supply your own base game. See THIRD-PARTY.md and the licenses directory.

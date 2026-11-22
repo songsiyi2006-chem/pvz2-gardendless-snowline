@@ -1,0 +1,2319 @@
+[
+ {
+  "id": "peashooter",
+  "name": "豌豆射手",
+  "world": "frontyard",
+  "nativeId": 0,
+  "card": "peashooter",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "sunflower",
+  "name": "向日葵",
+  "world": "frontyard",
+  "nativeId": 1,
+  "card": "sunflower",
+  "subs": [],
+  "tags": [
+   "plant",
+   "sunProducer"
+  ]
+ },
+ {
+  "id": "wallnut",
+  "name": "坚果墙",
+  "world": "frontyard",
+  "nativeId": 2,
+  "card": "wallnut",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "potatomine",
+  "name": "土豆地雷",
+  "world": "frontyard",
+  "nativeId": 3,
+  "card": "potatomine",
+  "subs": [],
+  "tags": [
+   "potatomine",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "cabbagepult",
+  "name": "卷心菜投手",
+  "world": "egypt",
+  "nativeId": 4,
+  "card": "cabbagepult",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "bloomerang",
+  "name": "回旋镖射手",
+  "world": "egypt",
+  "nativeId": 5,
+  "card": "bloomerang",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "iceburg",
+  "name": "冰冻生菜",
+  "world": "egypt",
+  "nativeId": 6,
+  "card": "iceburg",
+  "subs": [],
+  "tags": [
+   "plant",
+   "low",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "bonkchoy",
+  "name": "菜问",
+  "world": "egypt",
+  "nativeId": 7,
+  "card": "bonkchoy",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "repeater",
+  "name": "双重射手",
+  "world": "egypt",
+  "nativeId": 8,
+  "card": "repeater",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "megagatling",
+  "name": "超级机枪射手",
+  "world": "epic",
+  "nativeId": 9,
+  "card": "megagatlingpea",
+  "subs": [
+   "repeater_mgp",
+   "threepeater_mgp",
+   "splitpea_mgp",
+   "peapod_mgp",
+   "electricpeashooter_mgp",
+   "poisonpeashooter_mgp",
+   "seashooter_mgp",
+   "firepeashooter_mgp",
+   "snowpea_mgp",
+   "primalpeashooter_mgp",
+   "shadowpeashooter_mgp",
+   "slingpea_mgp",
+   "snappea_mgp",
+   "skyshooter_mgp",
+   "gatling_mgp"
+  ],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "scaredyshroom",
+  "name": "胆小菇",
+  "world": "dark",
+  "nativeId": 10,
+  "card": "scaredyShroom",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "fumeshroom",
+  "name": "大喷菇",
+  "world": "dark",
+  "nativeId": 11,
+  "card": "fumeshroom",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "gravebuster",
+  "name": "噬碑藤",
+  "world": "egypt",
+  "nativeId": 12,
+  "card": "gravebuster",
+  "subs": [],
+  "tags": [
+   "gravebuster",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "pumpkin",
+  "name": "南瓜头",
+  "world": "epic",
+  "nativeId": 13,
+  "card": "pumpkinhead",
+  "subs": [],
+  "tags": [
+   "vine"
+  ]
+ },
+ {
+  "id": "pvine",
+  "name": "豌豆藤蔓",
+  "world": "epic",
+  "nativeId": 14,
+  "card": "peavine",
+  "subs": [],
+  "tags": [
+   "vine"
+  ]
+ },
+ {
+  "id": "floawerPot",
+  "name": "飞天花盆",
+  "world": "market",
+  "nativeId": 15,
+  "card": "floawerPot",
+  "subs": [],
+  "tags": [
+   "floawerPot"
+  ]
+ },
+ {
+  "id": "firepeashooter",
+  "name": "火焰豌豆",
+  "world": "market",
+  "nativeId": 16,
+  "card": "firepeashooter",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "threepeater",
+  "name": "三线射手",
+  "world": "pirate",
+  "nativeId": 17,
+  "card": "threepeater",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "primalpeashooter",
+  "name": "原始豌豆射手",
+  "world": "dino",
+  "nativeId": 18,
+  "card": "primalpeashooter",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "xshot",
+  "name": "旋转芜菁",
+  "world": "ice",
+  "nativeId": 19,
+  "card": "xshot",
+  "subs": [],
+  "tags": [
+   "fly"
+  ]
+ },
+ {
+  "id": "homingthistle",
+  "name": "导向蓟",
+  "world": "market",
+  "nativeId": 20,
+  "card": "homingthistle",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "starfruit",
+  "name": "星星果",
+  "world": "market",
+  "nativeId": 21,
+  "card": "starfruit",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "shootingstarfruit",
+  "name": "流星果",
+  "world": "lod",
+  "nativeId": 22,
+  "card": "shootingstarfruit",
+  "subs": [],
+  "tags": [
+   "fly"
+  ]
+ },
+ {
+  "id": "lilypad",
+  "name": "莲叶",
+  "world": "water",
+  "nativeId": 23,
+  "card": "lilypad",
+  "subs": [],
+  "tags": [
+   "lilypad"
+  ]
+ },
+ {
+  "id": "sunshroom",
+  "name": "阳光菇",
+  "world": "dark",
+  "nativeId": 24,
+  "card": "sunshroom",
+  "subs": [],
+  "tags": [
+   "plant",
+   "sunProducer"
+  ]
+ },
+ {
+  "id": "twinsunflower",
+  "name": "双胞向日葵",
+  "world": "egypt",
+  "nativeId": 25,
+  "card": "twinsunflower",
+  "subs": [],
+  "tags": [
+   "plant",
+   "sunProducer"
+  ]
+ },
+ {
+  "id": "dragonbruit",
+  "name": "暴君火龙果",
+  "world": "market",
+  "nativeId": 26,
+  "card": "dragonbruit",
+  "subs": [
+   "dragonbabybruit"
+  ],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "moonflower",
+  "name": "月光花",
+  "world": "modern",
+  "nativeId": 27,
+  "card": "moonflower",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "snowpea",
+  "name": "寒冰射手",
+  "world": "kongfu",
+  "nativeId": 28,
+  "card": "snowpea",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "lightningreed",
+  "name": "闪电芦苇",
+  "world": "cowboy",
+  "nativeId": 29,
+  "card": "lightningreed",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "kernelpult",
+  "name": "玉米投手",
+  "world": "pirate",
+  "nativeId": 30,
+  "card": "kernelpult",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "meteorflower",
+  "name": "流星花",
+  "world": "epic",
+  "nativeId": 31,
+  "card": "meteorflower",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "springbean",
+  "name": "弹簧豆",
+  "world": "pirate",
+  "nativeId": 32,
+  "card": "springbean",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "umbrellaleaf",
+  "name": "伞叶",
+  "world": "epic",
+  "nativeId": 33,
+  "card": "umbrella",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "melonpult",
+  "name": "西瓜投手",
+  "world": "cowboy",
+  "nativeId": 34,
+  "card": "melonpult",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "wintermelon",
+  "name": "冰西瓜",
+  "world": "cowboy",
+  "nativeId": 35,
+  "card": "wintermelon",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "blover",
+  "name": "三叶草",
+  "world": "future",
+  "nativeId": 36,
+  "card": "blover",
+  "subs": [],
+  "tags": [
+   "plant",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "spikeweed",
+  "name": "地刺",
+  "world": "pirate",
+  "nativeId": 37,
+  "card": "spikeweed",
+  "subs": [],
+  "tags": [
+   "spikeweed"
+  ]
+ },
+ {
+  "id": "spikerock",
+  "name": "钢地刺",
+  "world": "pirate",
+  "nativeId": 38,
+  "card": "spikerock",
+  "subs": [],
+  "tags": [
+   "spikeweed",
+   "spikerock"
+  ]
+ },
+ {
+  "id": "chomper",
+  "name": "大嘴花",
+  "world": "market",
+  "nativeId": 39,
+  "card": "chomper",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "glaciershroom",
+  "name": "寒冰菇",
+  "world": "epic",
+  "nativeId": 40,
+  "card": "glacierShroom",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "primalwallnut",
+  "name": "原始坚果墙",
+  "world": "dino",
+  "nativeId": 41,
+  "card": "primalwallnut",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "buttercup",
+  "name": "黄油毛茛",
+  "world": "epic",
+  "nativeId": 42,
+  "card": "buttercup",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "banana",
+  "name": "香蕉火箭炮",
+  "world": "beach",
+  "nativeId": 43,
+  "card": "banana",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "missiletoe",
+  "name": "槲寄冰仙子",
+  "world": "market",
+  "nativeId": 44,
+  "card": "missiletoe",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "cherry_bomb",
+  "name": "樱桃炸弹",
+  "world": "pirate",
+  "nativeId": 45,
+  "card": "cherribomb",
+  "subs": [],
+  "tags": [
+   "plant",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "doomshroom",
+  "name": "毁灭菇",
+  "world": "epic",
+  "nativeId": 46,
+  "card": "doomshroom",
+  "subs": [],
+  "tags": [
+   "plant",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "cranjelly",
+  "name": "果冻蔓越莓",
+  "world": "market",
+  "nativeId": 47,
+  "card": "cranjelly",
+  "subs": [],
+  "tags": [
+   "plant",
+   "allowOverlap",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "torchwood",
+  "name": "火炬树桩",
+  "world": "epic",
+  "nativeId": 49,
+  "card": "torchwood",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "jalapeno",
+  "name": "火爆辣椒",
+  "world": "market",
+  "nativeId": 50,
+  "card": "jalapeno",
+  "subs": [],
+  "tags": [
+   "plant",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "puffshroom",
+  "name": "小喷菇",
+  "world": "dark",
+  "nativeId": 51,
+  "card": "puffshroom",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "gloomvine",
+  "name": "忧郁藤蔓",
+  "world": "epic",
+  "nativeId": 52,
+  "card": "gloomvine",
+  "subs": [],
+  "tags": [
+   "vine"
+  ]
+ },
+ {
+  "id": "vamporcini",
+  "name": "吸血牛肝菌",
+  "world": "epic",
+  "nativeId": 53,
+  "card": "vamporcini",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "primalpotatomine",
+  "name": "原始土豆地雷",
+  "world": "dino",
+  "nativeId": 54,
+  "card": "primalpotatomine",
+  "subs": [],
+  "tags": [
+   "potatomine",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "cactus",
+  "name": "仙人掌",
+  "world": "market",
+  "nativeId": 55,
+  "card": "cactus",
+  "subs": [],
+  "tags": [
+   "potatomine"
+  ]
+ },
+ {
+  "id": "powerlily",
+  "name": "能量花",
+  "world": "market",
+  "nativeId": 56,
+  "card": "powerlily",
+  "subs": [],
+  "tags": [
+   "plant",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "coconutcannon",
+  "name": "椰子加农炮",
+  "world": "pirate",
+  "nativeId": 57,
+  "card": "coconutcannon",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "peapod",
+  "name": "豌豆荚",
+  "world": "cowboy",
+  "nativeId": 58,
+  "card": "peapod",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "snapdragon",
+  "name": "火龙草",
+  "world": "pirate",
+  "nativeId": 59,
+  "card": "snapdragon",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "gatling",
+  "name": "机枪射手",
+  "world": "epic",
+  "nativeId": 60,
+  "card": "gatlingpea",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "splitpea",
+  "name": "裂荚射手",
+  "world": "cowboy",
+  "nativeId": 61,
+  "card": "splitpea",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "chilibean",
+  "name": "巴豆",
+  "world": "cowboy",
+  "nativeId": 62,
+  "card": "chilibean",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "tallnut",
+  "name": "高坚果",
+  "world": "cowboy",
+  "nativeId": 63,
+  "card": "tallnut",
+  "subs": [],
+  "tags": [
+   "amphibious"
+  ]
+ },
+ {
+  "id": "hurrikale",
+  "name": "飓风甘蓝",
+  "world": "market",
+  "nativeId": 64,
+  "card": "hurrikale",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant",
+   "lastStandDisallowed"
+  ]
+ },
+ {
+  "id": "stallia",
+  "name": "大丽菊",
+  "world": "lostcity",
+  "nativeId": 65,
+  "card": "stallia",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "electricpeashooter",
+  "name": "电能豌豆",
+  "world": "market",
+  "nativeId": 66,
+  "card": "electricpeashooter",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "squash",
+  "name": "倭瓜",
+  "world": "epic",
+  "nativeId": 67,
+  "card": "squash",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "gloomshroom",
+  "name": "忧郁菇",
+  "world": "epic",
+  "nativeId": 68,
+  "card": "gloomshroom",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "magnifyinggrass",
+  "name": "棱镜草",
+  "world": "future",
+  "nativeId": 69,
+  "card": "magnifyinggrass",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "celerystalker",
+  "name": "潜伏芹菜",
+  "world": "eighties",
+  "nativeId": 70,
+  "card": "celerystalker",
+  "subs": [],
+  "tags": [
+   "potatomine"
+  ]
+ },
+ {
+  "id": "sapfling",
+  "name": "树脂投手",
+  "world": "epic",
+  "nativeId": 71,
+  "card": "sapfling",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "parsnip",
+  "name": "防风草",
+  "world": "epic",
+  "nativeId": 72,
+  "card": "parsnip",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "explodeonut",
+  "name": "爆炸坚果",
+  "world": "market",
+  "nativeId": 73,
+  "card": "explodeonut",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "grapeshot",
+  "name": "爆裂葡萄",
+  "world": "market",
+  "nativeId": 74,
+  "card": "grapeshot",
+  "subs": [],
+  "tags": [
+   "plant",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "plantern",
+  "name": "路灯花",
+  "world": "epic",
+  "nativeId": 75,
+  "card": "plantern",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "peach",
+  "name": "仙桃",
+  "world": "kongfu",
+  "nativeId": 76,
+  "card": "heavenlypeach",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "jackolantern",
+  "name": "杰克南瓜",
+  "world": "market",
+  "nativeId": 77,
+  "card": "jackolantern",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "dandelion",
+  "name": "蒲公英",
+  "world": "epic",
+  "nativeId": 78,
+  "card": "dandelion",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "chardguard",
+  "name": "甜菜护卫",
+  "world": "ice",
+  "nativeId": 79,
+  "card": "chardguard",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "hypnoshroom",
+  "name": "魅惑菇",
+  "world": "market",
+  "nativeId": 80,
+  "card": "hypnoshroom",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "electriccurrant",
+  "name": "电流醋栗",
+  "world": "epic",
+  "nativeId": 81,
+  "card": "electriccurrant",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "escaperoot",
+  "name": "逃脱树根",
+  "world": "market",
+  "nativeId": 82,
+  "card": "escaperoot",
+  "subs": [],
+  "tags": [
+   "potatomine",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "imitater",
+  "name": "模仿者",
+  "world": "lod",
+  "nativeId": 83,
+  "card": "imitator",
+  "subs": [],
+  "tags": [
+   "imitater",
+   "any"
+  ]
+ },
+ {
+  "id": "shadowshroom",
+  "name": "毒影菇",
+  "world": "modern",
+  "nativeId": 84,
+  "card": "shadowshroom",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "magnetshroom",
+  "name": "磁力菇",
+  "world": "dark",
+  "nativeId": 85,
+  "card": "magnetshroom",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "turnip",
+  "name": "白萝卜",
+  "world": "kongfu",
+  "nativeId": 86,
+  "card": "turnip",
+  "subs": [],
+  "tags": [
+   "potatomine"
+  ]
+ },
+ {
+  "id": "empea",
+  "name": "脉冲黄桃",
+  "world": "future",
+  "nativeId": 87,
+  "card": "empeach",
+  "subs": [],
+  "tags": [
+   "plant",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "citron",
+  "name": "充能柚子",
+  "world": "future",
+  "nativeId": 88,
+  "card": "citron",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "laser_bean",
+  "name": "激光豆",
+  "world": "future",
+  "nativeId": 89,
+  "card": "laserbean",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "solartomato",
+  "name": "阳光番茄",
+  "world": "epic",
+  "nativeId": 90,
+  "card": "solartomato",
+  "subs": [],
+  "tags": [
+   "plant",
+   "lastStandDisallowed",
+   "sunProducer",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "powerplant_alpha",
+  "name": "瓷砖萝卜",
+  "world": "future",
+  "nativeId": 91,
+  "card": "powerplant_alpha",
+  "subs": [],
+  "tags": [
+   "powertile",
+   "tile",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "powerplant_beta",
+  "name": "瓷砖萝卜",
+  "world": "future",
+  "nativeId": 92,
+  "card": "powerplant_beta",
+  "subs": [],
+  "tags": [
+   "powertile",
+   "tile",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "powerplant_gamma",
+  "name": "瓷砖萝卜",
+  "world": "future",
+  "nativeId": 93,
+  "card": "powerplant_gamma",
+  "subs": [],
+  "tags": [
+   "powertile",
+   "tile",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "powerplant_delta",
+  "name": "瓷砖萝卜",
+  "world": "future",
+  "nativeId": 94,
+  "card": "powerplant_delta",
+  "subs": [],
+  "tags": [
+   "powertile",
+   "tile",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "powerplant_epsilon",
+  "name": "瓷砖萝卜",
+  "world": "future",
+  "nativeId": 95,
+  "card": "powerplant_epsilon",
+  "subs": [],
+  "tags": [
+   "powertile",
+   "tile",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "holonut",
+  "name": "全息坚果",
+  "world": "future",
+  "nativeId": 96,
+  "card": "holonut",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "powerplant",
+  "name": "瓷砖萝卜",
+  "world": "future",
+  "nativeId": 97,
+  "card": "powerplant_epsilon",
+  "subs": [
+   "powerplant_alpha",
+   "powerplant_beta",
+   "powerplant_gamma",
+   "powerplant_delta",
+   "powerplant_epsilon"
+  ],
+  "tags": [
+   "powertile",
+   "tile",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "marigold",
+  "name": "金盏花",
+  "world": "frontyard",
+  "nativeId": 98,
+  "card": "marigold",
+  "subs": [
+   "marigold_red",
+   "marigold_orange",
+   "marigold_yellow",
+   "marigold_green",
+   "marigold_blue",
+   "marigold_pink",
+   "marigold_purple"
+  ],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "applemortar",
+  "name": "苹果迫击炮",
+  "world": "market",
+  "nativeId": 106,
+  "card": "applemortar",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "redstinger",
+  "name": "红针花",
+  "world": "lostcity",
+  "nativeId": 107,
+  "card": "redstinger",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "skyshooter",
+  "name": "飞天射手",
+  "world": "sky",
+  "nativeId": 108,
+  "card": "skyshooter",
+  "subs": [],
+  "tags": [
+   "fly"
+  ]
+ },
+ {
+  "id": "sunbean",
+  "name": "阳光豆",
+  "world": "dark",
+  "nativeId": 109,
+  "card": "sunbean",
+  "subs": [],
+  "tags": [
+   "plant",
+   "sunProducer",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "peanut",
+  "name": "花生",
+  "world": "market",
+  "nativeId": 110,
+  "card": "peanut",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "tanglekelp",
+  "name": "缠绕水草",
+  "world": "water",
+  "nativeId": 114,
+  "card": "tanglekelp",
+  "subs": [],
+  "tags": [
+   "aquatic",
+   "deepAquatic",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "bowlingbulb",
+  "name": "保龄泡泡",
+  "world": "beach",
+  "nativeId": 115,
+  "card": "bowlingbulb",
+  "subs": [
+   "tool_projectile_bowlingbulb1",
+   "tool_projectile_bowlingbulb2",
+   "tool_projectile_bowlingbulb3",
+   "tool_projectile_bowlingbulb_explode",
+   "tool_projectile_bowlingbulb_iceburg",
+   "tool_projectile_bowling_wallnut",
+   "tool_projectile_bowling_explodeonut",
+   "tool_projectile_bowling_holonut",
+   "tool_projectile_bowling_primalwallnut",
+   "tool_projectile_bowling_tallnut"
+  ],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "guacodile",
+  "name": "鳄梨",
+  "world": "beach",
+  "nativeId": 120,
+  "card": "guacodile",
+  "subs": [],
+  "tags": [
+   "amphibious",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "ghostpepper",
+  "name": "幽灵辣椒",
+  "world": "epic",
+  "nativeId": 127,
+  "card": "ghostpepper",
+  "subs": [],
+  "tags": [
+   "fly",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "sweetpotato",
+  "name": "甜薯",
+  "world": "epic",
+  "nativeId": 128,
+  "card": "sweetpotato",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "pepperpult",
+  "name": "甜椒投手",
+  "world": "ice",
+  "nativeId": 129,
+  "card": "pepperpult",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "hotpotato",
+  "name": "烤马铃薯",
+  "world": "ice",
+  "nativeId": 130,
+  "card": "hotpotato",
+  "subs": [],
+  "tags": [
+   "hotpotato",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "stunion",
+  "name": "眩晕洋葱",
+  "world": "ice",
+  "nativeId": 131,
+  "card": "stunion",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "goldleaf",
+  "name": "黄金叶",
+  "world": "lostcity",
+  "nativeId": 132,
+  "card": "goldleaf",
+  "subs": [],
+  "tags": [
+   "tile",
+   "goldtile",
+   "sunProducer",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "akee",
+  "name": "AKEE",
+  "world": "lostcity",
+  "nativeId": 133,
+  "card": "akee",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "endurian",
+  "name": "榴莲",
+  "world": "lostcity",
+  "nativeId": 134,
+  "card": "endurian",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "toadstool",
+  "name": "金蟾菇",
+  "world": "market",
+  "nativeId": 135,
+  "card": "toadstool",
+  "subs": [],
+  "tags": [
+   "plant",
+   "sunProducer"
+  ]
+ },
+ {
+  "id": "lavaguava",
+  "name": "岩浆番石榴",
+  "world": "market",
+  "nativeId": 136,
+  "card": "lavaguava",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "phatbeet",
+  "name": "魔音甜菜",
+  "world": "eighties",
+  "nativeId": 137,
+  "card": "phatbeet",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "strawburst",
+  "name": "爆浆草莓",
+  "world": "epic",
+  "nativeId": 138,
+  "card": "strawburst",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "thymewarp",
+  "name": "逆时草",
+  "world": "eighties",
+  "nativeId": 139,
+  "card": "thymewarp",
+  "subs": [],
+  "tags": [
+   "plant",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "seashroom",
+  "name": "海蘑菇",
+  "world": "water",
+  "nativeId": 141,
+  "card": "seashroom",
+  "subs": [],
+  "tags": [
+   "amphibious",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "garlic",
+  "name": "大蒜",
+  "world": "eighties",
+  "nativeId": 142,
+  "card": "garlic",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "electricblueberry",
+  "name": "闪电蓝莓",
+  "world": "market",
+  "nativeId": 143,
+  "card": "electricblueberry",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "sporeshroom",
+  "name": "孢子菇",
+  "world": "eighties",
+  "nativeId": 144,
+  "card": "sporeshroom",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "intensivecarrot",
+  "name": "复活萝卜",
+  "world": "eighties",
+  "nativeId": 145,
+  "card": "intensivecarrot",
+  "subs": [],
+  "tags": [
+   "deadPlant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "primalsunflower",
+  "name": "原始向日葵",
+  "world": "dino",
+  "nativeId": 146,
+  "card": "primalsunflower",
+  "subs": [],
+  "tags": [
+   "plant",
+   "sunProducer"
+  ]
+ },
+ {
+  "id": "moonbean",
+  "name": "月亮豆",
+  "world": "sky",
+  "nativeId": 147,
+  "card": "moonbean",
+  "subs": [],
+  "tags": [
+   "fly",
+   "sunProducer",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "coldsnapdragon",
+  "name": "冰龙草",
+  "world": "market",
+  "nativeId": 148,
+  "card": "coldsnapdragon",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "nightshade",
+  "name": "暗影龙葵",
+  "world": "modern",
+  "nativeId": 149,
+  "card": "nightshade",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "dusklobber",
+  "name": "幽暮投手",
+  "world": "modern",
+  "nativeId": 150,
+  "card": "dusklobber",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "grimrose",
+  "name": "暗樱草",
+  "world": "modern",
+  "nativeId": 151,
+  "card": "grimrose",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "goldbloom",
+  "name": "黄金蓓蕾",
+  "world": "epic",
+  "nativeId": 152,
+  "card": "goldbloom",
+  "subs": [],
+  "tags": [
+   "plant",
+   "sunProducer",
+   "losingPlant",
+   "lastStandDisallowed"
+  ]
+ },
+ {
+  "id": "bloominghearts",
+  "name": "心蕊",
+  "world": "epic",
+  "nativeId": 153,
+  "card": "bloomingheart",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "shrinkingviolet",
+  "name": "畏缩紫罗兰",
+  "world": "market",
+  "nativeId": 154,
+  "card": "shrinkingviolet",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "hotdate",
+  "name": "热辣海枣",
+  "world": "epic",
+  "nativeId": 155,
+  "card": "hotdate",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "firegourd",
+  "name": "火葫芦",
+  "world": "kongfu",
+  "nativeId": 156,
+  "card": "firegourd",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "bambooshoot",
+  "name": "竹笋",
+  "world": "kongfu",
+  "nativeId": 157,
+  "card": "bambooshoot",
+  "subs": [],
+  "tags": [
+   "potatomine"
+  ]
+ },
+ {
+  "id": "snowdrop",
+  "name": "雪滴花",
+  "world": "market",
+  "nativeId": 158,
+  "card": "snowdrop",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "lychee",
+  "name": "荔枝",
+  "world": "kongfu",
+  "nativeId": 159,
+  "card": "lychee",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "perfumeshroom",
+  "name": "香水菇",
+  "world": "dino",
+  "nativeId": 160,
+  "card": "perfumeshroom",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant",
+   "lastStandDisallowed"
+  ]
+ },
+ {
+  "id": "solarsage",
+  "name": "阳光鼠尾草",
+  "world": "kongfu",
+  "nativeId": 161,
+  "card": "solarsage",
+  "subs": [],
+  "tags": [
+   "sunProducer",
+   "losingPlant",
+   "fly"
+  ]
+ },
+ {
+  "id": "bamboozle",
+  "name": "整人竹",
+  "world": "market",
+  "nativeId": 162,
+  "card": "bamboozle",
+  "subs": [
+   "bamboobusket"
+  ],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "cantaloupe",
+  "name": "哈密瓜投手",
+  "world": "kongfu",
+  "nativeId": 164,
+  "card": "cantaloupepult",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "iceweed",
+  "name": "冰地刺",
+  "world": "market",
+  "nativeId": 165,
+  "card": "iceweed",
+  "subs": [],
+  "tags": [
+   "spikeweed"
+  ]
+ },
+ {
+  "id": "pinkstarfruit",
+  "name": "天使星星果",
+  "world": "market",
+  "nativeId": 166,
+  "card": "pinkstarfruit",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "icebloom",
+  "name": "寒冰蓓蕾",
+  "world": "epic",
+  "nativeId": 167,
+  "card": "icebloom",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant",
+   "lastStandDisallowed"
+  ]
+ },
+ {
+  "id": "zoybeanpod",
+  "name": "豆腐尸荚",
+  "world": "market",
+  "nativeId": 168,
+  "card": "zoybeanpod",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "pyrevine",
+  "name": "柴火藤蔓",
+  "world": "epic",
+  "nativeId": 171,
+  "card": "pyrevine",
+  "subs": [],
+  "tags": [
+   "vine"
+  ]
+ },
+ {
+  "id": "shinevine",
+  "name": "闪耀藤蔓",
+  "world": "epic",
+  "nativeId": 172,
+  "card": "shinevine",
+  "subs": [],
+  "tags": [
+   "vine",
+   "sunProducer"
+  ]
+ },
+ {
+  "id": "atombomb_seedling",
+  "name": "原子石榴弹",
+  "world": "epic",
+  "nativeId": 173,
+  "card": "atombomb",
+  "subs": [
+   "atombomb",
+   "seedling"
+  ],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "hollyknight",
+  "name": "冬青骑士",
+  "world": "epic",
+  "nativeId": 174,
+  "card": "hollybarrier",
+  "subs": [
+   "hollybarrierleaf",
+   "hollybarrierleafplantfood"
+  ],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "aloe",
+  "name": "芦荟",
+  "world": "epic",
+  "nativeId": 177,
+  "card": "aloe",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "caulipower",
+  "name": "超能花菜",
+  "world": "market",
+  "nativeId": 178,
+  "card": "caulipower",
+  "subs": [],
+  "tags": [
+   "fly"
+  ]
+ },
+ {
+  "id": "gumnut",
+  "name": "香果胶",
+  "world": "epic",
+  "nativeId": 179,
+  "card": "gumnut",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "reinforcemint",
+  "name": "防御薄荷",
+  "world": "mint",
+  "nativeId": 180,
+  "card": "mint_defence",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "enlightenmint",
+  "name": "启明薄荷",
+  "world": "mint",
+  "nativeId": 181,
+  "card": "mint_sun",
+  "subs": [],
+  "tags": [
+   "fly",
+   "mint",
+   "sunProducer",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "wintermint",
+  "name": "寒冻薄荷",
+  "world": "mint",
+  "nativeId": 182,
+  "card": "mint_cold",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "spearmint",
+  "name": "穿刺薄荷",
+  "world": "mint",
+  "nativeId": 183,
+  "card": "mint_sharp",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "appeasemint",
+  "name": "平射薄荷",
+  "world": "mint",
+  "nativeId": 184,
+  "card": "mint_peashooter",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "enforcemint",
+  "name": "健壮薄荷",
+  "world": "mint",
+  "nativeId": 185,
+  "card": "mint_melee",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "peppermint",
+  "name": "热辣薄荷",
+  "world": "mint",
+  "nativeId": 186,
+  "card": "mint_fire",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "bombardmint",
+  "name": "爆裂薄荷",
+  "world": "mint",
+  "nativeId": 187,
+  "card": "mint_explosive",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "concealmint",
+  "name": "暗影薄荷",
+  "world": "mint",
+  "nativeId": 188,
+  "card": "mint_shadow",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "ailmint",
+  "name": "剧毒薄荷",
+  "world": "mint",
+  "nativeId": 189,
+  "card": "mint_poison",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "enchantmint",
+  "name": "魔法薄荷",
+  "world": "mint",
+  "nativeId": 190,
+  "card": "mint_magic",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "filamint",
+  "name": "电能薄荷",
+  "world": "mint",
+  "nativeId": 191,
+  "card": "mint_electric",
+  "subs": [],
+  "tags": [
+   "fly",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "containmint",
+  "name": "滞缓薄荷",
+  "world": "mint",
+  "nativeId": 192,
+  "card": "mint_slow",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "armamint",
+  "name": "军械薄荷",
+  "world": "mint",
+  "nativeId": 193,
+  "card": "mint_lobber",
+  "subs": [],
+  "tags": [
+   "plant",
+   "mint",
+   "lastStandDisallowed",
+   "imitateDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "seashooter",
+  "name": "海豌豆",
+  "world": "epic",
+  "nativeId": 194,
+  "card": "seashooter",
+  "subs": [],
+  "tags": [
+   "amphibious"
+  ]
+ },
+ {
+  "id": "shadowpeashooter",
+  "name": "暗影豌豆",
+  "world": "epic",
+  "nativeId": 195,
+  "card": "shadowpeashooter",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "murkadamia",
+  "name": "暗影夏威夷果",
+  "world": "epic",
+  "nativeId": 196,
+  "card": "murkadamianut",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "noctarine",
+  "name": "暗影油桃",
+  "world": "epic",
+  "nativeId": 197,
+  "card": "noctarine",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant",
+   "lastStandDisallowed"
+  ]
+ },
+ {
+  "id": "snappea",
+  "name": "大嘴豌豆",
+  "world": "lod",
+  "nativeId": 198,
+  "card": "snappea",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "asparagus",
+  "name": "芦笋战机",
+  "world": "market",
+  "nativeId": 199,
+  "card": "asparagus",
+  "subs": [],
+  "tags": [
+   "fly"
+  ]
+ },
+ {
+  "id": "pineapple",
+  "name": "旋转菠萝",
+  "world": "sky",
+  "nativeId": 200,
+  "card": "pineapple",
+  "subs": [],
+  "tags": [
+   "fly"
+  ]
+ },
+ {
+  "id": "anthurium",
+  "name": "电离红掌",
+  "world": "sky",
+  "nativeId": 201,
+  "card": "anthurium",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "bulbkekengi",
+  "name": "灯笼草",
+  "world": "sky",
+  "nativeId": 202,
+  "card": "bulbkekengi",
+  "subs": [],
+  "tags": [
+   "fly"
+  ]
+ },
+ {
+  "id": "loquat",
+  "name": "漩涡枇杷",
+  "world": "sky",
+  "nativeId": 203,
+  "card": "loquat",
+  "subs": [],
+  "tags": [
+   "fly",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "peacommando",
+  "name": "豌豆突击队",
+  "world": "sky",
+  "nativeId": 204,
+  "card": "peacommando",
+  "subs": [],
+  "tags": [
+   "fly"
+  ]
+ },
+ {
+  "id": "wasabiwhip",
+  "name": "炙热山葵",
+  "world": "epic",
+  "nativeId": 205,
+  "card": "wasabiwhip",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "poisonpeashooter",
+  "name": "黏毒豌豆",
+  "world": "epic",
+  "nativeId": 206,
+  "card": "goopeashooter",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "darkmatterdragonfruit",
+  "name": "暗物质火龙果",
+  "world": "lod",
+  "nativeId": 207,
+  "card": "darkmatterdragonfruit",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "mirrornut",
+  "name": "镜面坚果",
+  "world": "epic",
+  "nativeId": 208,
+  "card": "mirrornut",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "inferno",
+  "name": "地狱火蕨",
+  "world": "epic",
+  "nativeId": 209,
+  "card": "inferno",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "slingpea",
+  "name": "豌豆迫击炮",
+  "world": "lod",
+  "nativeId": 210,
+  "card": "slingpea",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "chillypepper",
+  "name": "寒冰辣椒",
+  "world": "market",
+  "nativeId": 211,
+  "card": "chillypepper",
+  "subs": [],
+  "tags": [
+   "plant",
+   "lastStandDisallowed",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "witchhazel",
+  "name": "女巫金缕梅",
+  "world": "lod",
+  "nativeId": 212,
+  "card": "witchhazel",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant"
+  ]
+ },
+ {
+  "id": "blastberry",
+  "name": "爆莓藤蔓",
+  "world": "epic",
+  "nativeId": 213,
+  "card": "blastberrivine",
+  "subs": [],
+  "tags": [
+   "vine"
+  ]
+ },
+ {
+  "id": "turkeypult",
+  "name": "火鸡投手",
+  "world": "lod",
+  "nativeId": 214,
+  "card": "turkeypult",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "stickybombrice",
+  "name": "糯米投弹手",
+  "world": "epic",
+  "nativeId": 215,
+  "card": "stickybombrice",
+  "subs": [],
+  "tags": [
+   "plant"
+  ]
+ },
+ {
+  "id": "lotorpedo",
+  "name": "鱼雷莲蓬",
+  "world": "epic",
+  "nativeId": 216,
+  "card": "lotorpedo",
+  "subs": [],
+  "tags": [
+   "amphibious"
+  ]
+ },
+ {
+  "id": "aquavine",
+  "name": "水生藤蔓",
+  "world": "epic",
+  "nativeId": 233,
+  "card": "aquavine",
+  "subs": [],
+  "tags": [
+   "vine",
+   "aquavine"
+  ]
+ },
+ {
+  "id": "buduhboom",
+  "name": "爆浆玉露",
+  "world": "lod",
+  "nativeId": 234,
+  "card": "buduhboom",
+  "subs": [],
+  "tags": [
+   "plant",
+   "losingPlant",
+   "lastStandDisallowed"
+  ]
+ }
+]
