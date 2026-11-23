@@ -6,11 +6,20 @@ function mountGardenOperations(root,tell){
     gem:'<path d="m3 8 4-5h10l4 5-9 13z M3 8h18 M8 8l4 13 4-13-4-5z"/>',
     x:'<path d="m6 6 12 12M18 6 6 18"/>',
     cross:'<circle cx="12" cy="12" r="7"/><path d="M12 2v6m0 8v6M2 12h6m8 0h6"/>',
-    dice:'<rect x="3" y="3" width="18" height="18" rx="4"/><g fill="currentColor" stroke="none"><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/></g>'
+    dice:'<rect x="3" y="3" width="18" height="18" rx="4"/><g fill="currentColor" stroke="none"><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/></g>',
+    owl:'<path d="m2 3 6 4 4-2 4 2 6-4-2 8 1 3-9 7-9-7 1-3z"/><path d="m5 10 4 1 2 3-4-1zm14 0-4 1-2 3 4-1zM11 16l1 2 1-2"/>'
   };
   const icon=(key,size=18)=>'<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">'+emblems[key]+'</svg>';
   ui.innerHTML='<button type="button" class="ops-launch ops-shop" hidden>'+icon('shop')+'庭院工坊</button><button type="button" class="ops-launch ops-intel" hidden>挑战图鉴</button><button type="button" class="ops-launch ops-expedition" hidden>'+icon('flake')+'雪线挑战</button><div class="ops-battery" role="group" aria-label="重装部署"></div><div class="ops-shade" hidden><section class="ops-book" role="dialog" aria-modal="true" aria-labelledby="ops-heading"><header class="ops-head"><i></i><h1 id="ops-heading"></h1><span class="ops-wallet"></span><button type="button" class="ops-close" aria-label="关闭">'+icon('x',21)+'</button></header><div class="ops-content"></div></section></div>';
   const $=s=>ui.querySelector(s), content=$('.ops-content'),shade=$('.ops-shade'),book=$('.ops-book');
+  const tyrantNames=['雪线挑战','铁血枭雄','铁血枭雄（噩梦）'];
+  const battlefield=document.createElement('div');battlefield.className='ops-tyrant-field';battlefield.hidden=true;
+  const battleLabel=document.createElement('span');battleLabel.className='ops-tyrant-label';
+  battleLabel.innerHTML=icon('owl',19)+'<b></b>';battlefield.append(battleLabel);shade.before(battlefield);
+  function theme(node,tier){
+    if(tier){if(node.dataset.tyrant!==String(tier))node.dataset.tyrant=String(tier);}
+    else if(node.hasAttribute('data-tyrant'))node.removeAttribute('data-tyrant');
+  }
   gardenStarterGift.mount(root,tell);
   const loadoutButton=document.createElement('button');loadoutButton.type='button';loadoutButton.className='ops-launch ops-loadout';loadoutButton.hidden=true;
   loadoutButton.innerHTML=icon('shop',16)+'战前装备';shade.before(loadoutButton);
@@ -38,12 +47,13 @@ function mountGardenOperations(root,tell){
     return portraits.get(id)||'';
   }
   function close(){
-    shade.hidden=true;page='';owner=null;scene=null;if(lastTrigger?.isConnected&&!lastTrigger.hidden)lastTrigger.focus({preventScroll:true});
+    shade.hidden=true;theme(shade,0);page='';owner=null;scene=null;if(lastTrigger?.isConnected&&!lastTrigger.hidden)lastTrigger.focus({preventScroll:true});
   }
   function open(next,trigger){
     gardenCompatible.refresh();
     if(busy)return;
     lastTrigger=trigger;scene=currentScene();owner=gardenEconomy.profile();if(!owner)return;
+    theme(shade,0);
     page=next;shade.hidden=false;book.classList.toggle('ops-ice',page==='challenge');book.classList.toggle('ops-simulation-book',page==='simulation');book.classList.toggle('ops-talents-book',page==='talents');book.classList.toggle('ops-loadout-book',page==='loadout');
     $('.ops-head i').innerHTML=icon(['shop','talents','loadout'].includes(page)?'shop':page==='simulation'?'cross':'flake',25);
     talentTab.hidden=!['shop','talents'].includes(page);talentTab.textContent=page==='talents'?'返回工坊':'植物天赋树';
@@ -216,7 +226,40 @@ function mountGardenOperations(root,tell){
     }
     selector.addEventListener('change',render);render();return guide;
   }
-  function armorGuide(collapsed){
+  function reinforcementPicker(fields,options,i,favorites){
+    const wrap=document.createElement('div');wrap.className='ops-pick-slot';fields.append(wrap);
+    const label=document.createElement('label');label.textContent='增援 '+(i+1);wrap.append(label);
+    const select=document.createElement('select');select.dataset.extraSlot=i;select.disabled=busy;label.append(select);
+    select.add(new Option('选择已拥有的植物',''));
+    const groups=[['超级植物',options.filter(id=>gardenChallenge.superPlant(id))],
+      ['我的收藏',options.filter(id=>!gardenChallenge.superPlant(id)&&favorites.includes(id))],
+      ['其他植物',options.filter(id=>!gardenChallenge.superPlant(id)&&!favorites.includes(id))]];
+    const unavailable=id=>extraCount===2&&extraDraft[1-i]===id;
+    for(const [heading,ids] of groups){
+      if(!ids.length)continue;
+      const group=document.createElement('optgroup');group.label=heading;select.append(group);
+      for(const id of ids){
+        const name=plantById.get(id)?.name||id;
+        const o=new Option(name+' · '+(id==='imitater'?'复制前一卡':gardenEconomy.rank(id)+' 阶')+(favorites.includes(id)?' ★':''),id);
+        o.disabled=unavailable(id);group.append(o);
+      }
+    }
+    const current=extraDraft[i];select.value=current;
+    const star=document.createElement('button');star.type='button';star.className='ops-star';star.dataset.favoriteSlot=i;
+    const marked=favorites.includes(current);star.textContent=marked?'★':'☆';star.setAttribute('aria-pressed',String(marked));
+    star.title=star.ariaLabel=(marked?'取消收藏':'收藏')+(plantById.get(current)?.name||'此植物');star.disabled=busy||!current;
+    wrap.append(star);
+    const available=favorites.filter(id=>options.includes(id)&&!unavailable(id));
+    if(available.length){
+      const quick=document.createElement('details');quick.className='ops-favorites';wrap.append(quick);
+      const title=document.createElement('summary');title.textContent='收藏快选 · '+available.length;quick.append(title);
+      for(const id of available.sort((a,b)=>Number(!!gardenChallenge.superPlant(b))-Number(!!gardenChallenge.superPlant(a)))){
+        const b=document.createElement('button');b.type='button';b.dataset.quickSlot=i;b.dataset.pickPlant=id;
+        b.textContent=plantById.get(id)?.name||id;b.disabled=busy;b.setAttribute('aria-pressed',String(id===current));quick.append(b);
+      }
+    }
+  }
+  function armorGuide(collapsed,tier=0){
     const box=document.createElement(collapsed?'details':'section');box.className=collapsed?'ops-foes ops-armor-table':'ops-armor-table';
     const heading=document.createElement(collapsed?'summary':'h3');heading.textContent='装甲敌潮 · 防护与弱点';box.append(heading);
     const camouflage=document.createElement('p');camouflage.textContent='挑战中每十名敌人，有一名穿林地迷彩。所有兵种都可能出现。迷彩头盔和背心的耐久、减伤与额外生命降至同档七成。地面重装与航空无法锁定迷彩目标，爆炸波及它时只结算两成伤害。植物和普通支援工事可以照常攻击。';box.append(camouflage);
@@ -226,20 +269,27 @@ function mountGardenOperations(root,tell){
     for(const [name,p] of [['轻装',profiles.light],['重装',profiles.heavy],['曜纹精英',profiles.elite]]){
       for(const [part,armor] of [['头盔',p.helmet],['背心',p.vest]]){
         const row=body.insertRow(),label=document.createElement('th');label.scope='row';label.textContent=name+' · '+part;row.append(label);
-        for(const value of [Math.round(100*armor.reduction)+'%',Math.round(100*armor.blastReduction)+'%','+'+armor.extraHealth])row.insertCell().textContent=value;
+        const blast=tier?Math.min(.999,1-(1-armor.blastReduction)*(.8**tier)*(tier===2?.60:1)):armor.blastReduction;
+        const direct=tier===2?1-(1-armor.reduction)*.70:armor.reduction;
+        for(const value of [Number((100*direct).toFixed(2))+'%',Number((100*blast).toFixed(3))+'%','+'+armor.extraHealth*(2**tier)])row.insertCell().textContent=value;
       }
     }
     const layers=document.createElement('p');layers.textContent='头盔和背心依次抵挡剩余伤害。破甲后该部件失去减伤，已增加的生命上限保留。';
     const counters=document.createElement('p');counters.textContent='穿甲机炮只受头盔原减伤的 4%、背心原减伤的 6%，并磨损铁网门与原生护具。抛射、溅射和背后攻击可绕开铁网门。携物雪人开始修甲时，击退它能打断修复。';
+    if(tier){
+      counters.textContent=tier===2?'噩梦头盔、背心的耐久再乘 1.75、2。每件护具的直击漏伤再乘 0.70，爆炸漏伤再乘 0.60。穿甲与直接碎甲作用于这两件时再乘 0.60。盾牌和铁网门有各自的规则。腐蚀真伤可以穿过护具。':'枭雄防具的爆炸漏伤乘 0.8，削甲与穿甲效力保留 75%。腐蚀真伤可以穿过护具。';
+    }
     box.append(table,layers,counters);return box;
   }
-  function specialGuide(){
+  function specialGuide(tier=0){
     const brief=document.createElement('details');brief.className='ops-foes';
     const caption=document.createElement('summary');caption.textContent='敌情手册 · 高压植物与特战僵尸';brief.append(caption);
     const alert=document.createElement('p');alert.textContent='第一面旗后重型盾卫率先登场，普通特战与九种植物僵尸分批进场，导弹开始锁定草坪。第二面旗起，曜纹精英盾卫、迫击炮与棱镜草加入增援。十种植物僵尸的生命额外提高 80%。';brief.append(alert);
+    if(tier)alert.append(' 下表列出常规挑战的基础招式。当前植物僵尸起手与攻击间隔乘 '+(tier===1?'0.5':'0.25')+'，自选增援的生命再乘 '+(2**tier)+'。本档防爆数值见装甲表。');
     const guide=document.createElement('dl');brief.append(guide);
     const specials=[['冰西瓜僵尸','高压型。蓄力 0.78 秒后投出冰瓜，砸向密植区，向外两格溅射并压制行动。中心格承受最重的冲击和眩晕。'],['狂暴机枪豌豆僵尸','高压型。通常预热 0.27 秒，每 0.075 秒一发，共六发。生命降至六成或每第三轮进入狂暴，预热 0.15 秒，每 0.045 秒一发，共十发并扫向邻行。'],['棱镜草僵尸','高压型。每 1.6 秒抽取 60 阳光并发射满功率光束，余额可以降为负数。充能期间打断可追回本轮阳光，收集阳光会抵还欠额。'],
       ...gardenHybridRoster.entries.map(e=>[e.name,e.description+' 起手 '+e.windup+' 秒，收招后 '+e.cooldown+' 秒可再次出手。']),['掷弹僵尸','手榴弹会在标记格延迟爆炸。'],['冲锋枪僵尸','进入短射程后连续点射，提前打断可以截停它。'],['重型盾卫','七株远征实际生命 9800，自选增援 13800，盾耐久 24000。首旗后可重复增援，第二面旗起最多三名普通盾卫同时在场。完整盾面截下 96% 正面直击和 98.5% 爆炸，保护盾后同排。穿甲机炮的首击有 60% 穿盾伤及本体，盾耐久按所挡伤害的六倍磨损；绕后或远程炮击可越盾。'],['曜纹精英盾卫','紫盾金徽，七株远征实际生命 16000，自选增援 22500，盾耐久 48000。第二面旗起最多两名精英盾卫同时在场。正面直击减伤 98.5%，爆炸减伤 99.5%。除同排外，还为相邻两行、身后两格内的友军挡下正面爆炸。穿甲机炮首击有 48% 穿盾伤及本体；两种完整重盾都会让穿向后排的机炮弹伤害再减半。破盾后失去掩护。']];
+    specials.unshift(['超级重装巨人','每场挑战至少六只。背部发射器轮射高爆、液氮、神经毒素和燃烧火箭；液氮会减慢植物行动，拦截装备能防御四种火箭。超重盾、反应装甲、液体护甲与智能头盔共同抵御爆炸和穿透，完整防具吸收 99% 此类伤害。巨人不投掷小鬼。可用直击、破甲和腐蚀配合拦截。']);
     for(const e of gardenChallengeMortar.entries)specials.push([e.name,e.description]);
     for(const [name,description] of specials){const row=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=name;dd.textContent=description;row.append(dt,dd);guide.append(row);}
     return brief;
@@ -273,13 +323,18 @@ function mountGardenOperations(root,tell){
     if(page!=='challenge')return;
     const active=actual(),baseDeck=gardenChallenge.baseDeck(),extras=extraDraft.slice(0,extraCount),ids=[...baseDeck,...extras.filter(Boolean)];
     const configured=gardenChallenge.extras(),dirty=JSON.stringify(extras)!==JSON.stringify(configured);
-    const trainingOK=gardenChallenge.validTraining(baseDeck,trainingDraft);
+    const tier=gardenChallenge.tyrantTier(extras,baseDeck);
+    const trainingOK=tier===2||gardenChallenge.validTraining(baseDeck,trainingDraft);
     const simChanged=JSON.stringify(gardenChallenge.simulationSettings(simulationDraft))!==JSON.stringify(gardenChallenge.draftSimulation());
-    const factors=gardenChallenge.profileModifiers(extraCount>0);
+    const terms=gardenChallengeRewards.terms(tier),quote=gardenChallenge.entryQuote(tier);
+    const factors=gardenChallenge.profileModifiers(extras,baseDeck),opening=gardenChallenge.openingFor(tier);
+    theme(shade,tier);
+    $('.ops-head i').innerHTML=icon(tier?'owl':'flake',25);
+    $('#ops-heading').textContent=tier?'挑战阵容':'雪线挑战';
     if(!ids.includes(plant))plant=ids[0];
     $('.ops-wallet').textContent='难度 Ⅳ';
-    content.innerHTML=`<div class="ops-brief"><div class="ops-brief-title"><span>古怪雪人来袭</span><h2>雪线远征</h2><p>七株六阶植物出战。开局额外获得 300 阳光，种子包冷却减半，可自由花费阳光。开战 ${gardenChallenge.openingSeconds} 秒后出现第一波，首旗前仅有原关敌潮。第二面旗起增援随波进场，旗帜波最密。</p></div><div class="ops-threat"><span>敌方移速<b>+${enemyBonus('speed')}</b></span><span>敌方伤害<b>+${enemyBonus('damage')}</b></span><span>敌方生命<b>+${enemyBonus('health')}</b></span></div></div><div class="ops-orders"><div class="ops-deck" role="group" aria-label="挑战阵容"></div><div class="ops-tactics"></div><div class="ops-pay"><b>挑战奖励</b><p>金币掉落权重 ×10 · 钻石掉落权重 ×20 · 升阶点 ×5。阳光、叶绿素及战利品自动收集。</p><p>通关另得 10,000 金币、20 钻石和一株随机新植物。图鉴收齐后改为随机升一阶。</p></div><footer class="ops-command"><button type="button" class="ops-cancel"></button><button type="button" class="ops-confirm"></button></footer></div>`;
-    const armorInfo=armorGuide(true);
+    content.innerHTML=`<div class="ops-brief"><div class="ops-brief-title"><span>古怪雪人来袭</span><h2>雪线远征</h2><p>七株六阶植物出战。开局额外获得 1,000 阳光，种子包冷却减半，可自由花费阳光。开战 ${opening} 秒后出现第一波，首旗前仅有原关敌潮。第二面旗起增援随波进场，旗帜波最密。</p></div><div class="ops-threat"><span>敌方移速<b>+${enemyBonus('speed')}</b></span><span>敌方伤害<b>+${enemyBonus('damage')}</b></span><span>敌方生命<b>+${enemyBonus('health')}</b></span></div></div><div class="ops-orders"><div class="ops-deck" role="group" aria-label="挑战阵容"></div><div class="ops-tactics"></div><div class="ops-pay"><b>挑战奖励</b><p>金币掉落权重 ×10 · 钻石掉落权重 ×20 · 升阶点 ×5。阳光、叶绿素及战利品自动收集。</p><p>通关另得 10,000 金币、20 钻石和一株随机新植物。图鉴收齐后改为随机升一阶。</p></div><footer class="ops-command"><button type="button" class="ops-cancel"></button><button type="button" class="ops-confirm"></button></footer></div>`;
+    const armorInfo=armorGuide(true,tier);
     const picker=document.createElement('section');picker.className='ops-reinforcement';
     const branchTabs=document.createElement('div');branchTabs.className='ops-forms';picker.append(branchTabs);
     for(const [n,id,label] of [[0,'standard','七株远征'],[1,'solo','增援一株'],[2,'reinforced','增援两株']]){
@@ -289,51 +344,60 @@ function mountGardenOperations(root,tell){
     $('.ops-deck').before(picker);
     if(extraCount){
       $('.ops-brief-title h2').textContent=extraCount===1?'单株增援':'双株增援';
-      $('.ops-brief-title p').textContent='在七株六阶植物之外，再带'+(extraCount===1?'一株':'两株')+'自有植物，保留原有阶数和专精。两种增援采用相同难度，波数均为七株远征的 1.5 倍。开局额外获得 300 阳光，种子包冷却减半，首波在第 '+gardenChallenge.openingSeconds+' 秒出现。';
+      $('.ops-brief-title p').textContent='自选增援保留原有阶数和专精。波数为七株远征的 1.5 倍，首波准备 '+opening+' 秒。自选超级机枪豌豆、瓷砖萝卜、充能柚子中的一类开启枭雄，两类开启噩梦。';
       const options=gardenChallenge.extraOptions(),fields=document.createElement('div');fields.className='ops-extra-fields';picker.append(fields);
-      for(let i=0;i<extraCount;i++){
-        const label=document.createElement('label');label.append('增援 '+(i+1));
-        const select=document.createElement('select');select.dataset.extraSlot=i;select.disabled=busy;
-        const first=document.createElement('option');first.value='';first.textContent='选择已拥有的植物';select.append(first);
-        for(const id of options){const o=document.createElement('option');o.value=id;o.textContent=(plantById.get(id)?.name||id)+' · '+(id==='imitater'?'复制前一卡':gardenEconomy.rank(id)+' 阶');o.disabled=extraCount===2&&extraDraft[1-i]===id;select.append(o);}
-        select.value=extraDraft[i];label.append(select);fields.append(label);
-      }
+      const favorites=gardenEconomy.read(owner).favoriteReinforcements;
+      for(let i=0;i<extraCount;i++)reinforcementPicker(fields,options,i,Array.isArray(favorites)?favorites:[]);
     }
-    $('.ops-threat').querySelectorAll('b').forEach((b,i)=>b.textContent='×'+[factors.speed,factors.damage,factors.health][i]);
+    if(tier){
+      $('.ops-wallet').textContent='挑战奖励 ×'+terms.weight;
+      $('.ops-brief-title>span').textContent='自选增援 · '+(tier===1?'单株触发':'双株触发');
+      $('.ops-brief-title h2').textContent=tyrantNames[tier];
+      $('.ops-brief-title p').textContent='准备 '+opening+' 秒。植物僵尸起手与攻击间隔缩至 '+(tier===1?'1/2':'1/4')+'。入场时全队获得爆发。'+(tier===2?'全队临时六阶，所选专精升到四级。':'固定七株沿用战前专精分配。');
+      $('.ops-pay').innerHTML='<b>挑战奖励 ×'+terms.weight+'</b><p>战利品按 '+terms.weight+' 倍权重发放。通关获得 '+terms.coin.toLocaleString('zh-CN')+' 金币、'+terms.gem+' 钻石和 '+terms.points+' 升阶点。</p><p>'+ (tier===1?'随机植物奖励一次，有 50% 概率再抽一次。':'随机植物奖励抽取两次。')+'优先解锁新植物，收齐后随机升阶。</p>';
+    }
+    $('.ops-threat').querySelectorAll('b').forEach((b,i)=>b.textContent='×'+Number([factors.speed,factors.damage,factors.health][i].toFixed(5)));
     $('.ops-pay').before(armorInfo);
-    armorInfo.after(worldGuide(gardenWorldVeterans.identify(get('levelController')?.LevelPlay?.component)),specialGuide());
+    armorInfo.after(worldGuide(gardenWorldVeterans.identify(get('levelController')?.LevelPlay?.component)),specialGuide(tier));
     if(!gardenEconomy.canChallenge(get('levelController')?.LevelPlay)){
       $('.ops-pay').innerHTML='<b>练习挑战</b><p>可体验完整敌潮和七株六阶植物。正式存档奖励在正式关卡发放。</p>';
     }
-    const banner=document.createElement('canvas');banner.setAttribute('aria-hidden','true');$('.ops-brief').prepend(banner);drawGardenSnow(banner);
+    if(tier){
+      const fee=document.createElement('p');fee.className='ops-entry-fee';
+      fee.textContent=quote.practice?'练习免票':('开战扣 '+quote.cost+' 钻石 · 当前 '+quote.balance+' 钻石'+(quote.affordable?'':' · 余额不足'));
+      $('.ops-brief-title').append(fee);
+    }
+    const banner=document.createElement('canvas');banner.setAttribute('aria-hidden','true');$('.ops-brief').prepend(banner);
+    if(tier)drawGardenTyrant(banner,tier);else drawGardenSnow(banner);
     const deck=$('.ops-deck');
     for(const id of ids){const p=plantById.get(id);if(!p)continue;const b=document.createElement('button');b.type='button';b.dataset.team=id;b.setAttribute('aria-pressed',String(id===plant));b.innerHTML='<img alt=""><b></b>';const src=portrait(id);if(src)b.firstChild.src=src;else b.firstChild.hidden=true;b.lastChild.textContent=p.name;deck.append(b);}
     deck.classList.toggle('ops-nine',extraCount===2);deck.classList.toggle('ops-eight',extraCount===1);
     for(const b of deck.children){const id=b.dataset.team,support=extras.includes(id),rank=support?gardenEconomy.rank(id):6;
-      const marker=document.createElement('small');marker.textContent=id==='imitater'?'复制前一卡':support?'自有 '+rank+' 阶':'六阶 · 专精 '+trainingDraft[id];b.append(marker);}
+      const marker=document.createElement('small');marker.textContent=id==='imitater'?'复制前一卡':tier===2?(gardenCompatible.numeric(id)?'六阶 · 数值加成':'六阶 · 专精 4'):support?'自有 '+rank+' 阶':'六阶 · 专精 '+trainingDraft[id];b.append(marker);}
     const skillPlant=plant==='imitater'?ids[ids.indexOf(plant)-1]:plant;
-    const rank=baseDeck.includes(skillPlant)?6:gardenEconomy.rank(skillPlant);
+    const rank=tier===2||baseDeck.includes(skillPlant)?6:gardenEconomy.rank(skillPlant);
     const modes=skillPlant&&rank===6?gardenModes.options(skillPlant):[],slot=tacticDraft[skillPlant]??gardenChallenge.mode(skillPlant);
     const choices=$('.ops-tactics');if(modes.length){
       const title=document.createElement('h3');title.textContent=(plant==='imitater'?'模仿者 · 复制':'')+(plantById.get(skillPlant)?.name||'')+' · 六阶模式';choices.append(title);
       const tabs=document.createElement('div');tabs.className='ops-mode-tabs';choices.append(tabs);
       for(let i=0;i<modes.length;i++){const b=document.createElement('button');b.type='button';b.dataset.tactic=i;b.dataset.skillPlant=skillPlant;b.setAttribute('aria-pressed',String(i===slot));b.textContent=modes[i].name;b.disabled=busy;tabs.append(b);}
       const detail=document.createElement('p');detail.textContent=modes[slot]?.description||'';choices.append(detail);
-      const level=baseDeck.includes(skillPlant)?trainingDraft[skillPlant]:gardenEconomy.mastery(skillPlant,slot);
+      const level=tier===2?4:baseDeck.includes(skillPlant)?trainingDraft[skillPlant]:gardenEconomy.mastery(skillPlant,slot);
       choices.append(masteryPanel(modes[slot],level));
     }else if(skillPlant){
       const note=document.createElement('p');note.textContent=(plant==='imitater'?'模仿者复制的':'')+(plantById.get(skillPlant)?.name||'')+'为 '+rank+' 阶。'+(gardenCompatible.numeric(skillPlant)?'每阶提高 10% 伤害、10% 行动速度和 200% 生命。':'升到六阶后可使用技能专精。');choices.append(note);
     }
     const loadout=document.createElement('div');loadout.className='ops-training-allocation';
-    const caption=document.createElement('b');caption.textContent='七株专精名额';loadout.append(caption);
+    const caption=document.createElement('b');caption.textContent=tier===2?'全队专精四级':'七株专精名额';loadout.append(caption);
     const roll=document.createElement('button');roll.type='button';roll.className='ops-dice';roll.disabled=busy;
     roll.innerHTML=icon('dice',17)+'掷骰子';roll.setAttribute('aria-label','掷骰子，随机分配七株给定植物的技能和专精');roll.title='随机分配七株给定植物的技能和专精';loadout.append(roll);
+    if(tier===2){roll.title=roll.ariaLabel='随机选择全队六阶技能';}
     const levels=baseDeck.map(id=>trainingDraft[id]);
-    for(const [n,max] of [[1,4],[3,2],[4,1]]){
+    for(const [n,max] of (tier===2?[]:[[1,4],[3,2],[4,1]])){
       const count=levels.filter(v=>v===n).length,tag=document.createElement('span');
       tag.textContent=n+' 级　'+count+'/'+max;tag.dataset.filled=String(count===max);loadout.append(tag);
     }
-    if(baseDeck.includes(plant)){
+    if(tier!==2&&baseDeck.includes(plant)){
       const field=document.createElement('label');field.append((plantById.get(plant)?.name||'')+'　');
       const sel=document.createElement('select');sel.dataset.trainingPlant=plant;sel.disabled=busy;
       for(const n of [1,3,4]){const o=document.createElement('option');o.value=n;o.textContent='专精 '+n+' 级';sel.append(o);}
@@ -356,6 +420,7 @@ function mountGardenOperations(root,tell){
     if(active&&dirty)$('.ops-confirm').textContent='应用新阵容';
     else if(active&&simChanged)$('.ops-confirm').textContent='应用模拟倍率';
     if(extras.some(id=>!id)){$('.ops-confirm').disabled=true;$('.ops-confirm').textContent=extraCount===1?'请选择一株增援植物':'请选择两株增援植物';}
+    if(tier&&!quote.affordable){$('.ops-confirm').disabled=true;$('.ops-confirm').textContent='入场需要 '+quote.cost+' 钻石';}
     if(!trainingOK){$('.ops-confirm').disabled=true;$('.ops-confirm').textContent='请配齐专精名额';}
   }
   ui.addEventListener('change',e=>{
@@ -426,14 +491,34 @@ function mountGardenOperations(root,tell){
     }
     if(page==='challenge'){
       if(!gardenChallenge.eligible()&&!config()){close();return;}
+      if(b.dataset.favoriteSlot!==undefined){
+        const id=extraDraft[Number(b.dataset.favoriteSlot)],state=gardenEconomy.read(owner);
+        if(!id)return;
+        const old=Array.isArray(state.favoriteReinforcements)?state.favoriteReinforcements:[];
+        const next=old.includes(id)?old.filter(v=>v!==id):[...old,id];
+        try{
+          if(!gardenChallengeRewards.saveBundle(owner,{gardendlessGreenhouseV1:{...state,favoriteReinforcements:next}}))tell('收藏未保存','请在正式玩家档案中设置收藏。');
+        }catch(err){tell('收藏未保存','请重试。');}
+        const scroll=content.scrollTop;challenge();content.scrollTop=scroll;
+        ui.querySelector('[data-favorite-slot="'+b.dataset.favoriteSlot+'"]')?.focus({preventScroll:true});return;
+      }
+      if(b.dataset.quickSlot!==undefined){
+        const i=Number(b.dataset.quickSlot),id=b.dataset.pickPlant;
+        if(!gardenChallenge.extraOptions().includes(id)||(extraCount===2&&extraDraft[1-i]===id))return;
+        extraDraft[i]=id;const scroll=content.scrollTop;challenge();content.scrollTop=scroll;
+        ui.querySelector('[data-extra-slot="'+i+'"]')?.focus({preventScroll:true});return;
+      }
       if(b.dataset.branch){extraCount=Number(b.dataset.extraCount);challenge();$('.ops-forms [aria-pressed="true"]')?.focus({preventScroll:true});return;}
       if(b.matches('.ops-dice')){
         const rolled=gardenChallenge.rollTactics();if(!rolled)return;
         const scroll=content.scrollTop;
-        trainingDraft=rolled.training;Object.assign(tacticDraft,rolled.modes);
+        const nightmare=gardenChallenge.tyrantTier(extraDraft.slice(0,extraCount),gardenChallenge.baseDeck())===2;
+        if(!nightmare)trainingDraft=rolled.training;
+        Object.assign(tacticDraft,rolled.modes);
+        if(nightmare)for(const id of extraDraft.slice(0,extraCount)){const modes=gardenModes.options(id);if(id!=='imitater'&&modes.length)tacticDraft[id]=Math.floor(Math.random()*modes.length);}
         challenge();content.scrollTop=scroll;$('.ops-dice')?.focus({preventScroll:true});
         const msg=document.createElement('span');msg.setAttribute('role','status');msg.className='ops-dice-result';
-        msg.textContent='已重掷七株 · 四级专精 '+(plantById.get(Object.keys(trainingDraft).find(id=>trainingDraft[id]===4))?.name||'');
+        msg.textContent=nightmare?'已重掷全队技能 · 专精四级':'已重掷七株 · 四级专精 '+(plantById.get(Object.keys(trainingDraft).find(id=>trainingDraft[id]===4))?.name||'');
         $('.ops-training-allocation').append(msg);return;
       }
       if(b.dataset.team){plant=b.dataset.team;challenge();return;}
@@ -445,7 +530,7 @@ function mountGardenOperations(root,tell){
       if(b.matches('.ops-confirm,.ops-cancel')){
         const confirming=b.matches('.ops-confirm');
         const extras=extraDraft.slice(0,extraCount);
-        if(confirming&&!gardenChallenge.validTraining(gardenChallenge.baseDeck(),trainingDraft))return;
+        if(confirming&&gardenChallenge.tyrantTier(extras,gardenChallenge.baseDeck())!==2&&!gardenChallenge.validTraining(gardenChallenge.baseDeck(),trainingDraft))return;
         const sameSimulation=JSON.stringify(gardenChallenge.simulationSettings(simulationDraft))===JSON.stringify(gardenChallenge.draftSimulation());
         if(confirming&&actual()&&sameSimulation&&JSON.stringify(gardenChallenge.extras())===JSON.stringify(extras)){
           if(gardenChallenge.setTraining(trainingDraft)){
@@ -493,9 +578,15 @@ function mountGardenOperations(root,tell){
     if(!simLaunch.hidden)simLaunch.dataset.on=String(gardenEconomy.profile()?.gardendlessGreenhouseV1?.simulationDefaults?.enabled===true);
     if(page==='simulation'&&simLaunch.hidden&&!busy)close();
     const b=$('.ops-expedition');b.hidden=!showChallenge;
-    if(!b.hidden){const on=actual();if(b.dataset.on!==String(on)){b.dataset.on=String(on);b.innerHTML=icon('flake')+(on?'挑战配置':'雪线挑战');}}
+    const liveTier=outside?0:gardenChallenge.activeTyrant(level);
+    if(!b.hidden){const on=actual();if(b.dataset.on!==String(on)||Number(b.dataset.tyrant||0)!==liveTier){
+      b.dataset.on=String(on);theme(b,liveTier);b.innerHTML=icon(liveTier?'owl':'flake')+(liveTier?tyrantNames[liveTier]:on?'挑战配置':'雪线挑战');}}
     if(!shade.hidden&&!busy&&(sceneNow!==scene||gardenEconomy.profile()!==owner||(page==='challenge'&&!showChallenge)||(['shop','talents'].includes(page)&&(!outside||inAlmanac))||(page==='intel'&&!inAlmanac)))close();
     const visible=hasProfile&&!outside&&level?.gameStarted&&!level.gameLost&&!level.gameWon&&!get('UI')?.UIInGame?.component?.paused;
+    battlefield.hidden=!(visible&&liveTier);
+    if(!battlefield.hidden&&Number(battlefield.dataset.tyrant||0)!==liveTier){
+      theme(battlefield,liveTier);battleLabel.querySelector('b').textContent=tyrantNames[liveTier];
+    }
     const guard=visible&&gardenInterceptors.status(level);interceptHUD.hidden=!guard;
     let showAir=false;
     for(const [type,btn] of airButtons){
@@ -507,7 +598,9 @@ function mountGardenOperations(root,tell){
       const text=info.count?(type==='f22'?info.powered+'/'+info.count+' 供能':info.count+' 架 · '+Math.ceil(info.remaining)+' 秒'):'';
       btn.lastChild.textContent=text;btn.lastChild.hidden=!text;btn.dataset.count=String(info.count);
       const grade=info.capped?' · 工坊 '+info.ownedLevel+' 级，本关 '+info.level+' 级':'';
-      btn.title=(info.reason||quote)+grade;btn.setAttribute('aria-label',info.name+'，'+quote+grade+(info.reason?'，'+info.reason:'')+(text?'，'+text:''));
+      const aura=type==='f22'?gardenAirWing.plantAura():null;
+      const boost=aura?.count?' · 全园伤害 +'+(2*aura.count)+'% / 暴击倍率 +'+aura.critBonus.toFixed(2)+' / 碎甲 +'+Number((100*aura.shred).toFixed(1))+'%':'';
+      btn.title=(info.reason||quote)+grade+boost;btn.setAttribute('aria-label',info.name+'，'+quote+grade+(info.reason?'，'+info.reason:'')+(text?'，'+text:'')+boost);
     }
     airBar.hidden=!showAir;
     if(guard){

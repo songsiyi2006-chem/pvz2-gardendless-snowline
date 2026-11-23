@@ -412,12 +412,16 @@ export async function install(ctx, getRank) {
     function dmg(n,type=0,through=false){return actual && hit(target,n*attack,type,through,state,owner);}
     if(effect==='sun'){
       const at=actual?target.worldPosition:sq.Square.getSquareWorldPosition(loc.r,loc.c,.5,.5);
-      const total=15*magnitude+(state.sunCarry||0);
-      const drop=5*Math.floor((total+1e-8)/5);
-      state.sunCarry=Math.max(0,total-drop);
-      if(drop>0){
-        if(typeof gardenFunctional!=='undefined')gardenFunctional.sun({_gardenSunYield:potency,_gardenSimulationId:owner},sunflower.sunflower,drop,at,28,true,false,false);
-        else sunflower.sunflower.produceSun(drop*potency,at,28,true,false,false);
+      if(typeof gardenFunctional!=='undefined'){
+        // The native pickup can retain a fractional face value. Settle it for
+        // this caster now instead of giving the remainder to the next caster.
+        const solar=typeof gardenModes!=='undefined'?gardenModes.solarFactor(ref.rank,ref.plan.id):1;
+        gardenFunctional.sun({_gardenSunYield:potency,_gardenSolarFactor:solar,_gardenSimulationId:owner},
+          sunflower.sunflower,15*magnitude,at,28,true,false,false);
+      }else{
+        const total=15*magnitude+(state.sunCarry||0),drop=5*Math.floor((total+1e-8)/5);
+        state.sunCarry=Math.max(0,total-drop);
+        if(drop>0)sunflower.sunflower.produceSun(drop*potency,at,28,true,false,false);
       }
     } else if(!actual || !alive(target)) return false;
     else switch(effect) {
@@ -513,7 +517,7 @@ export async function install(ctx, getRank) {
     const snap=()=>state.frame||=(snapshot(manager));
     const amountFactor=baseStats(ref.rank).damage;
     const env={
-      loc,body:ref.body,row,col,ratio,live:alive,generation:b=>generations.get(b)||0,
+      loc,body:ref.body,level:levelPlay.component,row,col,ratio,live:alive,generation:b=>generations.get(b)||0,
       time:()=>state.age,after:(delay,run)=>state.later.push({at:state.age+delay,run}),
       onKilled:(target,fn,seconds)=>watchBounty(target,fn,seconds,state),
       foes:()=>snap().foes,allies:()=>snap().friends,density:b=>snap().density(b),tile:pos=>tileAt(pos.r,pos.c),
@@ -523,7 +527,7 @@ export async function install(ctx, getRank) {
       sun:(amount,art=state)=>{
         const at=sq.Square.getSquareWorldPosition(loc.r,loc.c,.5,.5);
         if(typeof gardenFunctional!=='undefined'){
-          gardenFunctional.sun({_gardenSunYield:amountFactor,_gardenSimulationId:ref.simulationOrigin?.code||ref.plan.id},sunflower.sunflower,amount,at,28,true,false,false);
+          gardenFunctional.sun({_gardenSunYield:amountFactor,_gardenSolarFactor:modes?.solarFactor?.(ref.rank,ref.plan.id),_gardenSimulationId:ref.simulationOrigin?.code||ref.plan.id},sunflower.sunflower,amount,at,28,true,false,false);
         }else{
           const total=amount*amountFactor+(state.sunCarry||0),drop=5*Math.floor((total+1e-8)/5);
           state.sunCarry=Math.max(0,total-drop);if(drop>0)sunflower.sunflower.produceSun(drop,at,28,true,false,false);
@@ -547,6 +551,8 @@ export async function install(ctx, getRank) {
       return limits?{...all,foes:all.foes.filter(z=>laserGuard.allows(limits,z))}:all;
     };
     masteryEngine.cast(option,{...env,foes:()=>targets().foes,sun:amount=>env.sun(amount,art),
+      flash:(action,target)=>drawGardenFx(cc,loc,target.node,target.plantInLnC,action,ref.rank,art),
+      beacon:pos=>{const at=tileAt(pos.r,pos.c);if(at)drawGardenFx(cc,at,null,at.cell,'ward',ref.rank,art);},
       effect:(action,target,power,at)=>effectOn(ref,action,target,at,power,art,targets())},specialization);
   }
   const laserBound=new WeakSet();

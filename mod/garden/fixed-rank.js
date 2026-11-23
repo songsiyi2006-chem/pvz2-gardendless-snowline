@@ -4,6 +4,11 @@ const gardenFixed = (() => {
   const rifts = new Set(/*RIFT_LEVEL_IDS*/[]);
   const levels = new WeakMap(), sunRules=new WeakMap(), heavyChoices=new WeakMap();
   const knownProducers=new Set('sunflower twinsunflower sunshroom primalsunflower moonflower shinevine goldbloom solartomato goldleaf sunbean moonbean solarsage toadstool enlightenmint'.split(' '));
+  function producesSun(id){
+    if(knownProducers.has(id)||id==='marigold')return true;
+    const native=window.System?.get?.('chunks:///_virtual/Plants.ts')?.plants?.sunProducers;
+    return !!(native?.includes(id)||gardenCompatible.get(id)?.sunProducer);
+  }
   function equipment(level,saved){
     if(!sunRules.get(level))return saved;
     const support=saved.filter(id=>!['sniper','prism','rotary','bombard','airwing'].includes(id));
@@ -75,7 +80,7 @@ const gardenFixed = (() => {
     const scene = system.get(system.resolve('cc'))?.director?.getScene();
     return scene?.name === 'inGameScene' && level.node?.scene === scene;
   }
-  return {prepare, inLevel,equipment,chooseHeavy,noSunProduction:level=>sunRules.get(level)===true};
+  return {prepare,inLevel,equipment,chooseHeavy,producesSun,noSunProduction:level=>sunRules.get(level)===true};
 })();
 
 function gardenBattleRank(id) {

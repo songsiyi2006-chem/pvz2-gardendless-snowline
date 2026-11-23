@@ -28,8 +28,47 @@ const gardenModeMastery=(()=>{
   };
   for(const v of Object.values(tactics))Object.freeze(v);Object.freeze(tactics);
   const key=op=>op.route==='laser'?op.effect:op.route;
-  const describe=(op,level)=>{if(level===3||level===4)return gardenModeMasteryAdvanced.describe(op,level);
+  const originalDescription=(op,level)=>{if(level===3||level===4)return gardenModeMasteryAdvanced.describe(op,level);
     const t=tactics[key(op)];const i=(level-1)*2;return t&&level>=1&&level<=2?{name:t[i],description:t[i+1]}:null;};
+  const harvest=[0,20,25,30,60], wards=[0,1,1.25,1.5,2.5], defenses=new WeakMap();
+  function describe(op,level){
+    const original=originalDescription(op,level);
+    if(!original||op.solar==null)return original;
+    const role=op.solar===0?'主招额外产出基础 '+harvest[level]+' 阳光。':
+      op.solar===1?'主招保护两格内生命比例最低的 '+(level===4?3:1)+' 株植物 '+wards[level]+' 秒。':
+      '主招在本格布置 '+(level===4?2:1)+' 次截弹，守护周围一格 '+(4+level)+' 秒，可击落迫击炮弹及巨人火箭。';
+    return {name:original.name,description:original.description+' 本株阳光实收 ×'+gardenModes.solarYield(level)+'。'+role};
+  }
+  function solarSupport(op,e,level){
+    if(op.solar===0){e.sun(harvest[level]);return;}
+    if(op.solar===1){
+      const nearby=e.allies().filter(p=>e.live(p)&&Math.max(Math.abs(e.row(p)-e.loc.r),Math.abs(e.col(p)-e.loc.c))<=2);
+      nearby.sort((a,b)=>e.ratio(a)-e.ratio(b)||e.col(b)-e.col(a));
+      for(const plant of nearby.slice(0,level===4?3:1)){
+        plant.setCountDownInvincible?.(Math.max(plant.countDownInvincible||0,wards[level]));
+        e.flash?.('ward',plant);
+      }
+      return;
+    }
+    if(op.solar!==2||!e.level)return;
+    let cells=defenses.get(e.level);
+    if(!cells){cells=new Map();defenses.set(e.level,cells);}
+    const {r,c}=e.loc,until=e.level.gamedTime+4+level;
+    cells.set(r*64+c,{r,c,until,charges:level===4?2:1});
+    e.beacon?.({r,c});
+  }
+  function intercept(level,shell,progress){
+    if(progress<.65)return false;
+    const cells=defenses.get(level);
+    if(!cells)return false;
+    for(const [key,cell] of cells){
+      if(level.gamedTime>=cell.until){cells.delete(key);continue;}
+      if(Math.max(Math.abs(shell.target.r-cell.r),Math.abs(shell.target.c-cell.c))>1)continue;
+      if(--cell.charges===0)cells.delete(key);
+      return true;
+    }
+    return false;
+  }
   const setting='PvZ2_Greenhouse_MasteryFX_v1';let fx=true;
   try{fx=localStorage.getItem(setting)!=='0';}catch{}
   function setFX(value){fx=!!value;try{localStorage.setItem(setting,fx?'1':'0');}catch{}}
@@ -89,8 +128,9 @@ const gardenModeMastery=(()=>{
   }
   function cast(op,e,level){
     if(!op||!Number.isInteger(level)||level<=0||level>4)return;
+    if(op.solar!=null)solarSupport(op,e,level);
     basic(op,e,Math.min(2,level));
     if(level>=3)gardenModeMasteryAdvanced.cast(op,e,level);
   }
-  return Object.freeze({price,describe,cast,get fx(){return fx;},setFX});
+  return Object.freeze({price,describe,cast,intercept,get fx(){return fx;},setFX});
 })();

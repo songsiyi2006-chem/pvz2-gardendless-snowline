@@ -34,4 +34,4 @@ python -m pip install -r requirements.txt
 python patcher.py "D:\Games\pvzge-0.16.24.exe" "D:\Games\Snowline-custom.exe"
 ```
 
-The official 0.1 revision 2 game generated from the 0.16.24 Standard Windows executable has SHA-256 `c55fd21894b0591d0c4d8d1eb70983e93c34a76c936141308d5eb3cc3f6cf048`. A customized build normally has a different hash.
+The official 0.2 game generated from the 0.16.24 Standard Windows executable has SHA-256 `f4308623abd73d32649d38c084cb7c603fcd35d9aa849a48252dbbf7889376ec`. A customized build normally has a different hash.

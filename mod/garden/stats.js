@@ -21,7 +21,6 @@ const gardenCombatStats = (() => {
     !/Interval|Duration|Delay|Time|Factor|Scale|Multiplier|Mult$|Percent|Pct|Chance|Threshold|Reflect|Receives|Accumulated|Cap|Limit|Radius|Range|Count|Type|Immune/.test(k);
   let launchingRank = 0,launchingPlant=false,launchingCode=null,reconClock=null;
   function ownedRank(code, nativeId) {
-    if (gardenFixed.inLevel()) return 5;
     // A selected Imitater card carries the copied type in the native spawn arguments.
     // A random shell has no concrete target until its animation spawns that target.
     if (code === 'imitater') return 0;

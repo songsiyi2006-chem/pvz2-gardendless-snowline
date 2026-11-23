@@ -56,7 +56,7 @@ def apply(source):
     edit('sunbomb','a.specialDroppingOnEnable=function(){this.fadingStarted','a.specialDroppingOnEnable=function(){this._gardenCombatStats=null;this.fadingStarted')
     edit('sunbomb','P.produceSun(50,this.worldPosition','gardenFunctional.sun(this,P,50,this.worldPosition')
     edit('SunBean','t.setSunBeanSunPerHitpoint(a*this._objdataOwn.SunPerHitpoint)',
-         't._gardenSunYield=Math.max(t._gardenSunYield||1,this._gardenCombatStats?.damage||1),t.setSunBeanSunPerHitpoint(a*this._objdataOwn.SunPerHitpoint)')
+         't._gardenSunYield=Math.max(t._gardenSunYield||1,gardenFunctional.sunYield(this)),t.setSunBeanSunPerHitpoint(a*this._objdataOwn.SunPerHitpoint)')
     edit('Zombie','this.tangled=!1,this.sunbeanSunPerHitpoint=0,','this.tangled=!1,this._gardenSunYield=1,this.sunbeanSunPerHitpoint=0,')
     edit('Zombie','J.produceSun(i,this.worldPosition,this.zombieHeight/2,!0)','gardenFunctional.sun(this,J,i,this.worldPosition,this.zombieHeight/2,!0)')
     edit('ZoybeanPod','f.onSpawnedByZoybeanPod(this),','f.onSpawnedByZoybeanPod(this),f.dealDamageScale.push(this._gardenCombatStats?.damage||1),')

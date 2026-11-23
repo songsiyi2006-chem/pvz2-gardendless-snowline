@@ -38,7 +38,6 @@ def apply(source):
             ('e.sent.concat(n).forEach((function(e){e.worldPositionVec3=o', 'e.sent.concat(n).forEach((function(e){if(!i)gardenPlantSimulation.recruit(e,parent);e.worldPositionVec3=o')],
         'SnapDragon':[('n.inLane=this.inLane,n.damage=this._objdataOwn.DamagePlantfood','n._gardenSimulationId=gardenPlantSimulation.owner(this),n.inLane=this.inLane,n.damage=this._objdataOwn.DamagePlantfood')],
         'sunbomb':[('i.getComponent(w).sunbombProps=this.sunbombProps','i.getComponent(w)._gardenSimulationId=gardenPlantSimulation.owner(this),i.getComponent(w).sunbombProps=this.sunbombProps')],
-        'SunBean':[('this._gardenCombatStats?.damage||1),t.setSunBeanSunPerHitpoint','(this._gardenCombatStats?.damage||1)*gardenPlantSimulation.factor(this)),t.setSunBeanSunPerHitpoint')],
         'ChiliBean':[('new f(this.objdataOwn.MintPoisonDPS,a)', 'new f(this.objdataOwn.MintPoisonDPS*gardenPlantSimulation.factor(this),a)')],
         'goopeaFoodPrj':[
             ('e.setPoison(a.DPS,a.duration)', 'gardenPlantCritical.poison(e,t._gardenSimulationId||t._gardenPlantShot,[a.DPS,a.duration])'),

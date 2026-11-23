@@ -11,6 +11,32 @@ def helper():
 def apply(source):
     from fairplay import once
     edits = [
+        ('c.letsRock=function(){if(!this.rocked&&A.component.GameStartable()){',
+         'c.letsRock=function(){if(!this.rocked&&A.component.GameStartable()&&gardenChallenge.admit(this)){'),
+        ('c.gameStart=function(){if(!this.gameStarted){var e,t,n,r;if(this.IsLOD)',
+         'c.gameStart=function(){if(!this.gameStarted&&gardenChallenge.admit(this)){var e,t,n,r;if(this.IsLOD)'),
+        # The native card renderer and placement code both consult BOOSTED.
+        # Keep this virtual, including for profiles already holding a paid boost.
+        ('key:"BOOSTED",get:function(){return this._FORCE_BOOSTED||this._PP_BOOSTED}',
+         'key:"BOOSTED",get:function(){return this._FORCE_BOOSTED||this._PP_BOOSTED||gardenChallenge.activeTyrant()>0}'),
+        ('if(!r.BOOSTED&&"imitater"==r.Type&&this.CFs[a-1])',
+         'if((!r.BOOSTED||gardenChallenge.activeTyrant()>0)&&"imitater"==r.Type&&this.CFs[a-1])'),
+        ('W.getPlantProgressByID(o).boost>0||(a=!0,e=this.CFs[n-1].Type)',
+         'W.getPlantProgressByID(o).boost>0&&!gardenChallenge.activeTyrant()||(a=!0,e=this.CFs[n-1].Type)'),
+        ('u=o.BOOSTED,c=o.FORCE_BOOSTED,h=o.isImitater',
+         'u=o.BOOSTED,c=o.FORCE_BOOSTED||gardenChallenge.activeTyrant()>0,h=o.isImitater'),
+        ('o.PF.BOOST>0&&m.food(),c||B.BoostedPlantsUsed.includes(s)',
+         '(o.PF.BOOST>0||gardenChallenge.activeTyrant()>0)&&m.food(),c||B.BoostedPlantsUsed.includes(s)'),
+        ('i=e.boost,r=i>0,a=!n;if(a){var l=I.getStringByProps("SeedChooser","BoostCount")',
+         'i=e.boost,r=i>0||gardenChallenge.activeTyrant()>0,a=!n;if(a){var l=I.getStringByProps("SeedChooser","BoostCount")'),
+        ('this.boostCountLabel.string=l,this.boostGemLabel.string=o.BOOST.toString()',
+         'this.boostCountLabel.string=gardenChallenge.activeTyrant()?"本局爆发 / Boost active":l,this.boostGemLabel.string=o.BOOST.toString()'),
+        ('s.boost=function(){var t=this.current_id,e=O.getPlantFeature(t)',
+         's.boost=function(){if(gardenChallenge.activeTyrant())return;var t=this.current_id,e=O.getPlantFeature(t)'),
+        # The native Imitater remembers a placement boost until its transformation.
+        # Its pool checkout must clear it before the next planting.
+        ('this.invincible=!0,this.played=!1,this.willImitateType=void 0,this.foodable=!1',
+         'this.invincible=!0,this.played=!1,this.boosted=!1,this.willImitateType=void 0,this.foodable=!1'),
         ('this.currentSniperPlant=null),e){case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:if(this.cards.CFs[e])',
          'this.currentSniperPlant=null),e===8&&this.cards?.CFs[8]&&!arguments[2]?7:e){case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:if(this.cards.CFs[e])'),
         ('n.tryChangingIndex(8),this.willKeychooseCard=t','n.tryChangingIndex(8,false,true),this.willKeychooseCard=t'),

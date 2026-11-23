@@ -241,7 +241,7 @@ const gardenAirArt=(()=>{
       for(const [i,site] of sites.entries()){
         const dst=a.at(site.r,site.c,.02),delay=.21+i*.075;
         streak(a,'cluster',{x:dst.x-a.w*.58,y:dst.y+a.h*1.6},dst,.21,0,a.w*.65,a.h*.49,delay-.21,1);
-        impact(a,'fortress',dst,site.strong?3.18:1.56,delay,site.strong?1.05:.85,site.strong?4:1,i+serial,site.strong?238:99);
+        impact(a,'fortress',dst,site.strong?3.82:1.95,delay,site.strong?1.05:.85,site.strong?4:1,i+serial,site.strong?238:99);
       }
     }
   }

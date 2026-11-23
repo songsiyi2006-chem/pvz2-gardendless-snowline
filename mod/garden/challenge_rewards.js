@@ -55,45 +55,72 @@ const gardenChallengeRewards = (() => {
         !safe(coin)||!safe(gem)||coin<price.coin||gem<price.gem||old.points<price.points)return false;
     return save(player,{coin:coin-price.coin,gem:gem-price.gem,[field]:{...next,points:old.points-price.points}});
   }
-  const sample = list => list[Math.floor(Math.random()*list.length)];
-  function settle(level,p,amount,run) {
-    if(!run?.challenge||run.difficulty!==3||run.player!==p||settled.has(run)||p!==gardenEconomy.profile()||
-        !level?.gameStarted||level.gameLost||!Number.isSafeInteger(amount)||amount<=0)return null;
-    const {coin,gem}=wallet(p), old=gardenEconomy.read(p);
-    if(!safe(coin)||!safe(gem)||!safe(coin+10000)||!safe(gem+20)||!Number.isSafeInteger(old.points+amount))return null;
-    const next={...old,points:old.points+amount}, patch={coin:coin+10000,gem:gem+20,[field]:next};
-    const props=p.plantProps||{};
-    // Tile Turnip's five coloured cards share the parent plant's native unlock.
-    const rootOwned=gardenEconomy.owns(p,'powerplant'), tiles=gardenCatalogue.filter(plan=>plan.id.startsWith('powerplant_'));
-    const owns=id=>gardenEconomy.owns(p,id)||(id.startsWith('powerplant_')&&rootOwned);
+  const rewardTable=Object.freeze([1,1.5,2].map(weight=>Object.freeze({
+    weight,coin:10000*weight,gem:20*weight,points:60*weight
+  })));
+  const terms=tier=>rewardTable[tier]??rewardTable[0];
+  const activeTerms=()=>terms(gardenChallenge.activeTyrant?.()??0);
+  function rolledCount(amount,weight,roll=Math.random){
+    const exact=amount*weight,base=Math.floor(exact),fraction=exact-base;
+    return base+Number(fraction>0&&roll()<fraction);
+  }
+  const settling=new WeakSet(),rolls=new WeakMap();
+  function award(level,p,amount,run){
+    const tier=run.tyrantTier??gardenChallenge.activeTyrant?.(level)??0;
+    const reward=terms(tier),points=amount*reward.weight;
+    const {coin,gem}=wallet(p),old=gardenEconomy.read(p);
+    if(!safe(coin)||!safe(gem)||!safe(coin+reward.coin)||!safe(gem+reward.gem)||!Number.isSafeInteger(old.points+points))return null;
+    const next={...old,points:old.points+points},patch={coin:coin+reward.coin,gem:gem+reward.gem,[field]:next};
+    const props=p.plantProps||{},gifts=[];
+    const savedRolls=rolls.get(run)??[];
+    rolls.set(run,savedRolls);
+    let cursor=0;
+    const roll=()=>{
+      if(cursor===savedRolls.length)savedRolls.push(Math.random());
+      return savedRolls[cursor++];
+    };
+    const sample=list=>list[Math.floor(roll()*list.length)];
     const pending=level.levelDefinition?.FirstRewardType==='unlock_plant'?level.levelDefinition.FirstRewardParam:null;
-    const locked=gardenCatalogue.filter(plan=>!plan.id.startsWith('powerplant_')&&!owns(plan.id)&&plan.id!==pending);
-    let gift;
-    if(locked.length){
-      const plant=sample(locked);
-      const entry=props[plant.id]??props[plant.nativeId]??{};
-      patch.plantProps={...props,[plant.id]:{costumes:[],costume:-1,boost:0,tutorialLevel:0,medal:false,...entry,progress:2}};
-      gift='获得 '+plant.name;
-    }else{
-      const total=gardenEconomy.trainingCount(p)+1;
-      if(!Number.isSafeInteger(total))return null;
-      next.trainingLayers=total;
-      const choices=gardenCatalogue.filter(plan=>plan.id!=='imitater'&&owns(plan.id)&&Number(old.ranks[plan.id]||0)<6);
-      if(choices.length){
-        const plant=sample(choices),rank=Number(old.ranks[plant.id]||0)+1;
-        next.ranks={...old.ranks,[plant.id]:rank};
-        gift=plant.name+'升至'+rank+'阶 · 全队培养 +1';
-      }else gift='全队培养 +1 层';
+    const owned=id=>(patch.plantProps?.[id]?.progress??0)>0||gardenEconomy.owns(p,id);
+    const owns=id=>owned(id)||(id.startsWith('powerplant_')&&owned('powerplant'));
+    let layers=gardenEconomy.trainingCount(p);
+    const count=rolledCount(1,reward.weight,roll);
+    for(let i=0;i<count;i++){
+      const locked=gardenCatalogue.filter(plan=>!plan.id.startsWith('powerplant_')&&!owns(plan.id)&&plan.id!==pending);
+      if(locked.length){
+        const plant=sample(locked),entry=props[plant.id]??props[plant.nativeId]??{};
+        patch.plantProps??={...props};
+        patch.plantProps[plant.id]={costumes:[],costume:-1,boost:0,tutorialLevel:0,medal:false,...entry,progress:2};
+        gifts.push('获得 '+plant.name);
+      }else{
+        if(!Number.isSafeInteger(++layers))return null;
+        next.trainingLayers=layers;
+        const choices=gardenCatalogue.filter(plan=>plan.id!=='imitater'&&owns(plan.id)&&Number(next.ranks[plan.id]||0)<6);
+        if(choices.length){
+          const plant=sample(choices),rank=Number(next.ranks[plant.id]||0)+1;
+          next.ranks={...next.ranks,[plant.id]:rank};
+          gifts.push(plant.name+'升至'+rank+'阶 · 全队培养 +1');
+        }else gifts.push('全队培养 +1 层');
+      }
     }
-    if(rootOwned||patch.plantProps?.powerplant?.progress>0){
+    // The stock game stores the five colour variants under their parent turnip.
+    if(owned('powerplant')){
       const record=patch.plantProps?.powerplant||props.powerplant||props[gardenNativeIds.get('powerplant')];
-      for(const plan of tiles)if((props[plan.id]?.progress??props[plan.nativeId]?.progress??0)<=0){
-        patch.plantProps||={...props};patch.plantProps[plan.id]=record;
+      for(const plan of gardenCatalogue)if(plan.id.startsWith('powerplant_')&&!owned(plan.id)){
+        patch.plantProps??={...props};patch.plantProps[plan.id]=record;
       }
     }
     if(!save(p,patch))return null;
-    settled.add(run);
-    return {title:'专属挑战通关 · '+gift,detail:'金币 +10000　钻石 +20　升阶点 +'+amount};
+    settled.add(run);rolls.delete(run);
+    const title=['专属挑战','铁血枭雄','铁血枭雄（噩梦）'][tier]??'专属挑战';
+    return {title:title+'通关 · '+gifts.join('、'),detail:'金币 +'+reward.coin+'　钻石 +'+reward.gem+'　升阶点 +'+points};
+  }
+  function settle(level,p,amount,run){
+    if(!run?.challenge||run.difficulty!==3||run.player!==p||settled.has(run)||settling.has(run)||p!==gardenEconomy.profile()||
+        !level?.gameStarted||level.gameLost||!Number.isSafeInteger(amount)||amount<=0)return null;
+    settling.add(run);
+    try{return award(level,p,amount,run);}
+    finally{settling.delete(run);}
   }
   function autoCollect(drop){
     return lootTypes.has(drop.DroppingType)&&enabled();
@@ -110,6 +137,7 @@ const gardenChallengeRewards = (() => {
     counter.plantFoodAdd();
   }
   function category(roll){
+    roll/=activeTerms().weight;
     return roll<.06?'gem':roll<.13?'gold':roll<.28?'silver':null;
   }
   function yetiWeight(type,weight) {
@@ -118,8 +146,15 @@ const gardenChallengeRewards = (() => {
   function supplies(zombie,drop) {
     if(!zombie._gardenEventYeti || !enabled() || zombie.hypnotized)return;
     zombie._gardenEventYeti=false;
-    drop.dropOneTicket(zombie.worldPosition);
-    drop.dropOneSprout(zombie.worldPosition);
+    const count=fieldCount(1);
+    for(let i=0;i<count;i++){
+      drop.dropOneTicket(zombie.worldPosition);
+      drop.dropOneSprout(zombie.worldPosition);
+    }
   }
-  return {wallet,saveBundle:save,spendGems,spendTraining,settle,autoCollect,collectGreen,refill,category,yetiWeight,supplies,enabled};
+  function fieldCount(amount){
+    const weight=activeTerms().weight;
+    return weight===1?amount:rolledCount(amount,weight);
+  }
+  return {terms,wallet,saveBundle:save,spendGems,spendTraining,settle,autoCollect,collectGreen,refill,category,yetiWeight,fieldCount,supplies,enabled};
 })();

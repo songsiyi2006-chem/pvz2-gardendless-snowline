@@ -32,7 +32,8 @@ const gardenFunctional = (() => {
       id==='powerlily'?'伤害增加叶绿素产额，不足一枚的部分在本关累计；攻速加快种包回转。':
       sunPlants.has(id)?'伤害提高每颗阳光的实收值，攻速加快生产或一次性种包回转。':
       arming.has(id)?'攻速缩短出土准备，伤害提高爆炸威力。':
-      id==='citron'?'攻速缩短充能时间，伤害提高每枚电浆弹的威力。':
+      id==='megagatling'?'种植费额外增加 550 阳光。自动大招触发概率 5%，每次大招消耗 100 阳光。手动使用叶绿素可透支。连射随机打出樱桃爆弹、雷电、紫火、等离子与穿甲弹。':
+      id==='citron'?'基础种植费 600 阳光。攻速缩短充能时间，每次普通开火有 1% 概率立即发动大招。核爆电球穿过 30% 防爆抗性。爆心碎甲，辐射与腐蚀持续造成真实伤害，草坪可继续种植。':
       mints.has(id)?'攻速缩短种包回转，伤害加强登场支援。':
       wardens.has(id)?'攻速加快邻格援护，伤害提高治疗或反击强度。':
       healers.has(id)?'攻速缩短疗程间隔，伤害转为实际治疗量。':
@@ -87,8 +88,12 @@ const gardenFunctional = (() => {
   const simulation=source=>typeof gardenPlantSimulation==='undefined'?1:gardenPlantSimulation.factor(source);
   function sun(source,utility,...args) {
     const previous=sunScale;
-    sunScale=(source?._gardenCombatStats?.damage||source?._gardenSunYield||1)*simulation(source);
+    sunScale=sunYield(source);
     try{return utility.produceSun(...args);}finally{sunScale=previous;}
+  }
+  function sunYield(source){
+    const stats=source?._gardenCombatStats;
+    return (stats?.damage||source?._gardenSunYield||1)*(stats?.solarFactor||source?._gardenSolarFactor||1)*simulation(source);
   }
   function nativeSun(source,utility,...args){
     return gardenCompatible.numeric(source?.Plant_Type)?sun(source,utility,...args):utility.produceSun(...args);
@@ -111,7 +116,11 @@ const gardenFunctional = (() => {
   }
   const reserves=new WeakMap(), units=new WeakMap();
   function living(z){return !!z?.node?.activeInHierarchy&&!z.dead&&!z.displayed&&!z.hypnotized&&!z.invincible&&!!z.isInLawn?.();}
-  function hit(z,amount,classes){z.dealDamage(new classes.ZombieDamageDetails(amount,true,false,false,null,0,true));}
+  function hit(z,amount,classes){
+    // Support reserves already include each contributing plant's own simulation factor.
+    const packet=new classes.ZombieDamageDetails(amount,true,false,false,null,0,true);
+    z.dealDamage(gardenPlantCritical.mark(packet));
+  }
   function enqueue(plant,value) {
     const level=get('levelController')?.LevelPlay.component, cm=get('CharacterManager');
     if(!(value>0)||!level||!cm||!plant.plantInLnC)return;
@@ -166,6 +175,6 @@ const gardenFunctional = (() => {
     const foe=cm.ZombiePool.pool().filter(z=>living(z)&&Math.abs(z.lIndex-cell.lIndex)<=1&&(recruiting.has(id)||Math.abs(z.cIndex-cell.cIndex)<=2)).sort((a,b)=>Math.abs(a.cIndex-cell.cIndex)-Math.abs(b.cIndex-cell.cIndex))[0];
     if(foe)hit(foe,35*st.damage*simulation(body),cm);
   }
-  return {kind,property,cardTime,castAnimation,summary,statLabels,reset,deploy,tick,sun,nativeSun,resetDrop,priceDrop,coin,foodCount,
+  return {kind,property,cardTime,castAnimation,summary,statLabels,reset,deploy,tick,sun,sunYield,nativeSun,resetDrop,priceDrop,coin,foodCount,
     get sunScale(){return sunScale;}};
 })();

@@ -90,7 +90,8 @@ const gardenEconomy = (() => {
   function owns(player, id) {
     id=gardenCompatible.code(id);
     const plants=player?.plantProps;
-    return (plants?.[id]?.progress ?? plants?.[gardenNativeIds.get(id)]?.progress ?? 0) > 0;
+    const unlocked=code=>(plants?.[code]?.progress??plants?.[gardenNativeIds.get(code)]?.progress??0)>0;
+    return unlocked(id)||(typeof id==='string'&&id.startsWith('powerplant_')&&unlocked('powerplant'));
   }
   function rank(id) {
     id=gardenCompatible.code(id);
@@ -139,7 +140,7 @@ const gardenEconomy = (() => {
     if (!canChallenge(play) || player !== profile() || !Number.isInteger(difficulty) || rewards[difficulty] === undefined) return;
     const challenge = difficulty === 3 && gardenChallenge.active(level);
     if (!challenge && !play.thisLevelsID?.some(id => gardenLevelIds.has(id))) return;
-    sessions.set(level, {player, difficulty, challenge});
+    sessions.set(level, {player,difficulty,challenge,tyrantTier:challenge?(gardenChallenge.activeTyrant?.(level)??0):0});
   }
   function win(level) {
     const run = sessions.get(level);
@@ -163,7 +164,12 @@ const gardenEconomy = (() => {
   return Object.freeze({prices, rewards, profile, rank, owns, buy, trainAgain, read, start, win, trainingCount, mode, chooseMode, mastery, buyMastery, saveSimulationDefaults,canChallenge, onNotice(fn) { notify = fn; }});
 })();
 
-const gardenTrainingSpeed = .005;
+const gardenTrainingSpeed = .003;
+const gardenTrainingHealth = .10;
+const gardenTrainingCrit = .01;
+function gardenCriticalMultiplier(layers,talent) {
+  return 1.5+layers*gardenTrainingCrit+(talent?.critPower??0);
+}
 function gardenEffectiveStats(rank, code, previewMode) {
   const personal=gardenBaseStats(rank,code);
   const layers=gardenEconomy.trainingCount();
@@ -172,5 +178,8 @@ function gardenEffectiveStats(rank, code, previewMode) {
   const recon=typeof gardenPlantCritical!=='undefined'&&gardenPlantCritical.recon();
   const talent=typeof gardenTalents!=='undefined'?gardenTalents.bonuses():null;
   const actionSpeed=(personal.attackSpeed+layers*gardenTrainingSpeed)*(recon?1.15:1)*(talent?.speed??1);
-  return {damage:personal.damage,actionSpeed,attackSpeed:actionSpeed*stance,health:(personal.health+layers*.03)*(talent?.health??1),critChance:(recon ? .17 : .05)+(talent?.crit??0),critMultiplier:1.5+(talent?.critPower??0)};
+  const solarFactor=rank===6&&typeof gardenModes!=='undefined'?(gardenModes.solarFactor?.(rank,id,previewMode)??1):1;
+  return {damage:personal.damage,solarFactor,actionSpeed,attackSpeed:actionSpeed*stance,
+    health:(personal.health+layers*gardenTrainingHealth)*(talent?.health??1),
+    critChance:(recon ? .17 : .05)+(talent?.crit??0),critMultiplier:gardenCriticalMultiplier(layers,talent)};
 }

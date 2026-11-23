@@ -10,7 +10,7 @@ const gardenPlantSimulation=(()=>{
   function factor(source){
     const id=owner(source);if(!id||typeof gardenChallenge==='undefined'||!gardenChallenge.simulation)return 1;
     const canonical=(typeof forms!=='undefined'&&forms.get(id))||id;
-    return Math.min(5,Math.max(1,Number(gardenChallenge.simulation(canonical))||1));
+    return gardenChallenge.simulation(canonical);
   }
   function reset(body,code){
     body._gardenSimulationId=null;body._gardenSimulationHP=factor(code);

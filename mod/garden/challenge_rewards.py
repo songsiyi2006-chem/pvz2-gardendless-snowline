@@ -24,11 +24,17 @@ def apply(src):
              'else if(challenged?kind==="gold":i<.01)for(var o=0;o<e;o++)J.dropOneCoin(t,1)'),
             ('else if(i<.025)for(var a=0;a<e;a++)J.dropOneCoin(t,0)',
              'else if(challenged?kind==="silver":i<.025)for(var a=0;a<e;a++)J.dropOneCoin(t,0)'),
+            ('U.LeftTicket--;for(var s=0;s<e;s++)J.dropOneTicket(t)',
+             'U.LeftTicket--;for(var s=0,tickets=gardenChallengeRewards.fieldCount(e);s<tickets;s++)J.dropOneTicket(t)'),
+            ('l.dropSprout=function(t){Math.random()<.003&&J.dropOneSprout(t)}',
+             'l.dropSprout=function(t){if(Math.random()<.003)for(var n=gardenChallengeRewards.fieldCount(1);n>0;n--)J.dropOneSprout(t)}'),
             ('U.DropCoins&&this.dropCoin(v)','(U.DropCoins||gardenChallengeRewards.enabled())&&this.dropCoin(v)'),
             ('var v=this.worldPosition;if(this.PickupCollectableTutorial)',
              'var v=this.worldPosition;gardenChallengeRewards.supplies(this,J);if(this.PickupCollectableTutorial)')],
         'YetiZombie':[
-            ('return{weight:t.Weight,props:t.Prize}','return{weight:gardenChallengeRewards.yetiWeight(t.Prize?.Type,t.Weight),props:t.Prize}')],
+            ('return{weight:t.Weight,props:t.Prize}','return{weight:gardenChallengeRewards.yetiWeight(t.Prize?.Type,t.Weight),props:t.Prize}'),
+            ('if(t)for(var e=+t.Count,o=0;o<e;o++)switch(t.Type)',
+             'if(t)for(var e=gardenChallengeRewards.fieldCount(+t.Count),o=0;o<e;o++)switch(t.Type)')],
     }
     parts=re.split(r'(?=System\.register\("chunks:///_virtual/)',src)
     for i,part in enumerate(parts):

@@ -1,5 +1,5 @@
 const gardenChallenge = (() => {
-  const openingSeconds=17;
+  const openingFor=tier=>13-3*tier;
   const prepared = new WeakMap(), sessions = new WeakMap(), noCarry = new WeakSet(), definitions = new WeakMap();
   const get = key => window.System?.get('chunks:///_virtual/' + key + '.ts');
   const play = () => get('levelController')?.LevelPlay;
@@ -41,12 +41,14 @@ const gardenChallenge = (() => {
       !!bank()?.seedChooser?.node.activeInHierarchy;
   };
   const canConfigure = () => !changing && active() && pregame(play()?.component);
-  const multiplier=n=>Number.isInteger(n)&&n>=1&&n<=5;
+  const isTileTurnip=id=>/^(?:(?:powerplant|tool_powertile)(?:_(?:alpha|beta|gamma|delta|epsilon))?|tile_?turnip)$/.test(id);
+  const simulationLimit=id=>isTileTurnip(id)?1:id&&gardenFixed.producesSun(id)?12:5;
+  const multiplier=(n,limit)=>Number.isInteger(n)&&n>=1&&n<=limit;
   function simulationSettings(raw){
-    const base=multiplier(raw?.base)?raw.base:2,plants={};
+    const base=multiplier(raw?.base,5)?raw.base:2,plants={};
     for(const id of Object.keys(raw?.plants||{}).sort()){
       const n=raw.plants[id];
-      if(id!=='imitater'&&gardenPlantIds.has(id)&&multiplier(n))plants[id]=n;
+      if(id!=='imitater'&&!isTileTurnip(id)&&gardenPlantIds.has(id)&&multiplier(n,simulationLimit(id)))plants[id]=n;
     }
     return {enabled:raw?.enabled===true,base,plants};
   }
@@ -55,7 +57,8 @@ const gardenChallenge = (() => {
   function simulationValue(settings,id,deck){
     if(!settings?.enabled||!deck?.includes(id))return 1;
     if(id==='imitater')id=deck[deck.indexOf(id)-1];
-    return settings.plants[id]??settings.base;
+    if(!id||isTileTurnip(id))return 1;
+    return settings.plants?.[id]??settings.base;
   }
   function simulation(id){
     const l=play()?.component,s=l&&sessions.get(l);
@@ -135,6 +138,8 @@ const gardenChallenge = (() => {
   function applyExtras(rec,ids){
     rec.extras=validExtras(rec,ids)?[...ids]:[];
     rec.deck=Object.freeze([...rec.baseDeck,...rec.extras]);
+    rec.tyrant=tyrantTier(rec.extras,rec.baseDeck);
+    rec.modifiers=rec.extras.length?reinforcedProfiles[rec.tyrant]:standard;
   }
   const defaultTraining=ids=>Object.fromEntries(ids.map((id,i)=>[id,i<4?1:i<6?3:4]));
   function rollTactics(){
@@ -159,18 +164,29 @@ const gardenChallenge = (() => {
   function setTraining(allocation){
     if(!canConfigure())return false;
     const r=record();
+    if(r.tyrant===2)return true;
     if(!validTraining(r.baseDeck,allocation))return false;
     r.training=Object.fromEntries(r.baseDeck.map(id=>[id,allocation[id]]));return true;
   }
   function mastery(id,index){
     if(!active())return null;
     const r=record();
+    id=imitated(id,r);
+    if(r.tyrant===2&&gardenPlantIds.has(id)&&!gardenCompatible.numeric(id))return index===mode(id)?4:0;
     if(!r?.baseDeck.includes(id))return null;
     return index===mode(id)?r.training[id]:0;
   }
+  function imitated(id,r){
+    if(id!=='imitater'||!r)return id;
+    const position=r.deck.indexOf(id);
+    return position>0?r.deck[position-1]:id;
+  }
   function rank(id){
     if(!active()||!gardenPlantIds.has(id))return null;
-    return gardenCompatible.numeric(id)||sessions.get(play().component).extras.includes(id)?gardenEconomy.rank(id):6;
+    const r=record();id=imitated(id,r);
+    if(id==='imitater')return null;
+    if(r.tyrant===2)return 6;
+    return gardenCompatible.numeric(id)||r.extras.includes(id)?gardenEconomy.rank(id):6;
   }
   // CardUIUpper reads both overlay nodes in its onLoad, as soon as its slot is parented.
   function extendOverlay(){
@@ -183,11 +199,15 @@ const gardenChallenge = (() => {
     }
   }
   function mode(id) {
-    const value = sessions.get(play()?.component)?.modes[id] ?? owner()?.gardendlessGreenhouseV1?.modes?.[id];
+    const r=sessions.get(play()?.component);
+    id=imitated(id,r);
+    const value = r?.modes[id] ?? owner()?.gardendlessGreenhouseV1?.modes?.[id];
     return value === 1 || value === 2 ? value : 0;
   }
   function setMode(id, index) {
-    if (!canConfigure() || gardenCompatible.numeric(id) || !deck().includes(id) || rank(id)!==6 || ![0,1,2].includes(index)) return false;
+    if (!canConfigure() || !deck().includes(id)) return false;
+    id=imitated(id,record());
+    if(id==='imitater'||gardenCompatible.numeric(id)||rank(id)!==6||![0,1,2].includes(index))return false;
     sessions.get(play().component).modes[id] = index;
     if (typeof gardenCombatStats !== 'undefined') gardenCombatStats.refreshMode(id);
     return true;
@@ -220,7 +240,9 @@ const gardenChallenge = (() => {
     const prev = play()?.component;
     if (changing || (refresh ? !pregame(prev) : on ? !eligible() || active() : !canConfigure())) return false;
     const rec = prepared.get(prev);
-    if (!rec || on&&(!validExtras(rec,extras)||allocation&&!validTraining(rec.baseDeck,allocation)||prev.difficulty!==6||gardenFixed.inLevel())) return false;
+    if (!rec || on&&(!validExtras(rec,extras)||prev.difficulty!==6||gardenFixed.inLevel())) return false;
+    if(on&&tyrantTier(extras,rec.baseDeck)===2)allocation=null;
+    if(on&&allocation&&!validTraining(rec.baseDeck,allocation))return false;
     changing = true;
     noCarry.add(prev);
     const regularCards=active(prev) ? rec.regularCards : [...(bank()?.CurrentPlantTypes || [])];
@@ -298,7 +320,7 @@ const gardenChallenge = (() => {
     }
     manager.WaveCount = total;
     manager.FlagWaveInterval = interval;
-    manager.ZombieCountdownFirstWaveSecs=openingSeconds;
+    manager.ZombieCountdownFirstWaveSecs=openingFor(s.tyrant||0);
   }
   function flags(level){return sessions.get(level)?.flagsSeen.size||0;}
   function acceptWave(level,index,isFlag){
@@ -370,10 +392,48 @@ const gardenChallenge = (() => {
     await Promise.all(jobs);
   }
   const unscaled = new WeakMap();
-  const standard=Object.freeze({speed:1.6,damage:3,health:5}),reinforced=Object.freeze({speed:1.92,damage:6,health:7.5});
+  const standard=Object.freeze({speed:1.6,damage:3,health:5});
+  const reinforcedProfiles=[0,1,2].map(tier=>Object.freeze({speed:1.92*1.3**tier,damage:6*2**tier,health:7.5*2**tier}));
+  const superFamily=id=>isTileTurnip(id)?'powerplant':id==='citron'||id==='megagatling'?id:null;
+  const superPlant=id=>!!superFamily(id);
+  function tyrantTier(extras,baseDeck=record()?.baseDeck||[]){
+    const families=new Set();
+    let previous=baseDeck.at(-1);
+    for(const selected of extras){
+      const id=selected==='imitater'?previous:selected;
+      const family=superFamily(id);
+      if(family)families.add(family);
+      previous=id;
+    }
+    return Math.min(2,families.size);
+  }
+  const activeTyrant=(level=play()?.component)=>level===play()?.component?sessions.get(level)?.tyrant||0:0;
+  function entryQuote(tier=activeTyrant()){
+    const controller=play(),engine=get('PlayerProperties')?.AllPlayerProperties;
+    const practice=!!(engine?.practiceProfile||controller?.sandBoxModeOn||controller?.GitHubLevelName);
+    const cost=tier>0&&!practice?30:0,balance=owner()?.gem??0;
+    return {cost,balance,practice,affordable:!cost||(Number.isSafeInteger(balance)&&balance>=cost)};
+  }
+  // The native "Let's Rock" action is the commitment boundary. A fresh level
+  // receives a fresh record on restart, even when its deck and modes carry over.
+  function admit(level){
+    const r=sessions.get(level);
+    if(!r?.tyrant||!active(level)||r.admitted)return true;
+    const {cost,balance,affordable}=entryQuote(r.tyrant);
+    let paid=!cost;
+    if(cost&&affordable){
+      try{paid=gardenChallengeRewards.saveBundle(owner(),{gem:balance-cost});}
+      catch(error){console.error('[Greenhouse] entrance payment',error);}
+    }
+    if(!paid){
+      play()?.gameWarn?.(affordable?'无法保存入场费，请重试 / Save failed':'钻石不足，入场需要 30 钻 / 30 gems required',2);
+      return false;
+    }
+    r.admitted=true;return true;
+  }
   const isReinforced=level=>!!(level&&sessions.get(level)?.extras.length);
-  const profileModifiers=useExtras=>useExtras?reinforced:standard;
-  const factors=()=>profileModifiers(isReinforced(play()?.component));
+  const profileModifiers=(extras,baseDeck)=>Array.isArray(extras)?(extras.length?reinforcedProfiles[tyrantTier(extras,baseDeck)]:standard):extras?reinforcedProfiles[0]:standard;
+  const factors=()=>sessions.get(play()?.component)?.modifiers||standard;
   const modifiers=Object.freeze({get speed(){return factors().speed},get damage(){return factors().damage},get health(){return factors().health}});
   const routeSpeed=body=>(body._gardenChallengeHostile&&!body.hypnotized?modifiers.speed:1)*(body.objdata?.GardenShieldguard?.5:1);
   const hurt = k => /Damage|DPS/.test(k) &&
@@ -440,10 +500,10 @@ const gardenChallenge = (() => {
     for(const [k,v] of Object.entries(defaults || {})) if (injected[k] == null && hurt(k) && Number.isFinite(v)) injected[k]=v*modifiers.damage;
     return injected;
   }
-  return {active,flags,acceptWave,waveDelay,openingSeconds,modifiers,profileModifiers,isReinforced,routeSpeed,allegianceStats,eligible,canConfigure,deck,mode,setMode,
+  return {active,flags,acceptWave,waveDelay,openingFor,get openingSeconds(){return openingFor(activeTyrant());},superPlant,tyrantTier,activeTyrant,entryQuote,admit,modifiers,profileModifiers,isReinforced,routeSpeed,allegianceStats,eligible,canConfigure,deck,mode,setMode,
     baseDeck:()=>[...(record()?.baseDeck||[])],extras:()=>[...(record()?.extras||[])],extraOptions:()=>extraOptions(),
     enable:(extras=[],allocation=null,settings=null)=>active()?canConfigure()&&toggle(true,true,extras,allocation,settings):toggle(true,false,extras,allocation,settings),
-    simulation,simulationValue,simulationSettings,mapSimulation,draftSimulation,
+    simulation,simulationValue,simulationSettings,simulationLimit,mapSimulation,draftSimulation,
     mastery,training,setTraining,validTraining,rollTactics,disable:()=>toggle(false),remember,prepare,definition,
     resetBody,stats,launch,projectile,restoreCards,jump,generated,difficultyEdited,settingsClosed,
     clearPending(){pending=null;difficultyEditLevel=null;},get projectileOwner(){return projectileOwner;},

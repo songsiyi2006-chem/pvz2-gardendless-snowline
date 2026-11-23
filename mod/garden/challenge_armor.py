@@ -32,18 +32,18 @@ def apply(source):
     source=once(source,'this.HighRed>0?c.shockRGB=1:this.TotalRGB>0&&(c.shockRGB=this.TotalRGB),this.balloonKiller',
         'gardenChallengeArmor.tagShot(c,e,this,t,i),this.HighRed>0?c.shockRGB=1:this.TotalRGB>0&&(c.shockRGB=this.TotalRGB),this.balloonKiller')
     source=once(source,'i.dealDamage(n,t.armorKnockSound)<=0&&(e.throwArmor',
-        "i.dealDamage(t._gardenHitKind==='rotary-ap'?2*n:n,t.armorKnockSound)<=0&&(e.throwArmor")
+        "i.dealDamage(t._gardenHitKind==='rotary-ap'?n*(1+gardenChallengeArmor.penetrationPower(e)):n,t.armorKnockSound)<=0&&(e.throwArmor")
     # These native items store durability on the zombie instead of in armors[].
     # Reuse paper destruction/enrage and the poncho/plate wear and drop callbacks.
     source=once(source,'if(this.havePaper&&e.armorProtection){var t=e.damage;t>0',
-        "if(this.havePaper&&(e.armorProtection||e._gardenHitKind==='rotary-ap')){var t=e.damage*(e._gardenHitKind==='rotary-ap'?2:1);t>0")
+        "if(this.havePaper&&(e.armorProtection||e._gardenHitKind==='rotary-ap')){var t=e.damage*(e._gardenHitKind==='rotary-ap'?1+gardenChallengeArmor.penetrationPower(this):1);t>0")
     source=once(source,'Math.min(e.damage,this.paperHealth)),this.paperHealth-=t*',
         'Math.min(t,this.paperHealth)),this.paperHealth-=t*')
     source=once(source,'var a=-this._paperHealth,i=this.defaultDealDamage(e.replaceDamage(a>0?a:0))',
         "var a=-this._paperHealth,i=this.defaultDealDamage(e.replaceDamage(e._gardenHitKind==='rotary-ap'?e.damage:a>0?a:0))")
     source=once(source,'if(this.invincible)return this.health;var e=t.damage;if(t.damageType==u.fire',
         """if(this.invincible)return this.health;if(t._gardenHitKind==='rotary-ap'){
-        var wear=2*t.damage*this.damageScale(t);
+        var wear=(1+gardenChallengeArmor.penetrationPower(this))*t.damage*this.damageScale(t);
         if(this.ponchoHealth>0){var cloth=Math.min(this.ponchoHealth,wear);this.ponchoHealth-=cloth;this.pushSunBeanHealth(cloth);wear-=cloth;}
         if(this.plateHealth>0&&wear>0){var steel=Math.min(this.plateHealth,wear);this.plateHealth-=steel;this.pushSunBeanHealth(steel);if(this.plateHealth<=0)this.throwPlate(t.damageDirection);}
         return this.defaultDealDamage(t);}var e=t.damage;if(t.damageType==u.fire""")

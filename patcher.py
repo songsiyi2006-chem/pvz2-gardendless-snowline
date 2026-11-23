@@ -1,4 +1,4 @@
-"""Build public beta 0.1 from the player's own Windows copy of Gardendless."""
+"""Build public beta 0.2 from the player's own Windows copy of Gardendless."""
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import argparse
@@ -10,7 +10,7 @@ import sys
 
 BASE_SHA256 = '02f0bf4dcf17bc6afa09ce8e752ebd162dc6b06555dc981f56693fdb5e172624'
 BASE_BYTES = 1211438592
-DEFAULT_OUTPUT = 'Snowline-Garden-v0.1.exe'
+DEFAULT_OUTPUT = 'Snowline-Garden-v0.2.exe'
 HOME_DIR = Path(sys.executable if getattr(sys,'frozen',False) else __file__).resolve().parent
 
 def install(base, output=None):
@@ -117,9 +117,9 @@ def gui():
         target=pick_file(True,'保存独立测试版 / Choose a new output',str(base.parent/DEFAULT_OUTPUT))
         if not target:return
         install(base,target)
-        popup(None,'制作完成 / Ready to play\n\n'+str(target),'Snowline Garden 0.1',0x40)
+        popup(None,'制作完成 / Ready to play\n\n'+str(target),'Snowline Garden 0.2',0x40)
     except Exception as exc:
-        popup(None,str(exc),'Snowline Garden 0.1',0x10);raise
+        popup(None,str(exc),'Snowline Garden 0.2',0x10);raise
 
 if __name__=='__main__':
     if len(sys.argv)==1: gui()

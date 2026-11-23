@@ -27,6 +27,8 @@ SOURCE = WORK/'format/original'
 REPLACEMENTS = WORK/'format/replacements'
 OLD_KEY = 'PvZ2_PlayerProperties'
 NEW_KEY = 'PvZ2_Snowline_PublicBeta_01_Players'
+CLASSIC_KEY = 'PvZ2_Snowline_PublicBeta_01_Classic'
+CLASSIC_ENABLED = f'localStorage.getItem("{CLASSIC_KEY}")==="1"'
 
 def read(p):
     return p.read_text(encoding='utf8')
@@ -38,6 +40,7 @@ def literal(v):
     return json.dumps(v,ensure_ascii=False,separators=(',',':'))
 
 def wrapper(battle):
+    import titan_core
     source = WORK/'sources'
     catalogue = read(source/'catalog.js').replace('export const catalogue', 'const catalogue')
     catalogue = catalogue.replace('期间受到的升阶技能的直接伤害','期间受到的升阶技能直接伤害').replace('适格目标','可选目标').replace('；','。')
@@ -56,7 +59,7 @@ def wrapper(battle):
     else:
         combat = 'async function install(){}'
     internals=read_json(source/'native-internals.json')
-    return '\n'.join([read(HERE/'beta-notice.js'),catalogue,'const gardenCatalogue = [...catalogue];',
+    return '\n'.join([read(HERE/'beta-notice.js'),read(HERE/'gatling-ammo-art.js'),read(HERE/'ultimate-r4.js'),read(HERE/'titan-rockets.js'),titan_core.helper(),catalogue,'const gardenCatalogue = [...catalogue];',
         'const gardenNativeIds = new Map(catalogue.map(p=>[p.id,p.nativeId]));',
         'const gardenPlantIds = new Set(gardenNativeIds.keys());',
         read(HERE/'compatible-plants.js').replace('/*NATIVE_INTERNALS*/[]',literal(internals)),
@@ -69,8 +72,33 @@ def wrapper(battle):
         read(HERE/'hybrid-roster.js'),read(HERE/'challenge-troopers.js'),read(HERE/'mortar-art.js'),read(HERE/'challenge-mortar.js'),challenge_hybrids.helper(),laser_shield.helper(),read(HERE/'hybrid-native-shots.js'),read(HERE/'hybrid-heads.js'),read(HERE/'hybrid-art.js'),read(HERE/'challenge-air-raid.js'),
         read(HERE/'mode-mastery-advanced.js'),read(HERE/'mode-mastery.js'),read(HERE/'modes.js'),read(HERE/'economy.js'),read(HERE/'starter-gift.js'),read(HERE/'talents.js'),read(HERE/'talent-view.js'),read(HERE/'plant-critical.js'),read(HERE/'plate.js'),read(HERE/'view.js'),
         read(HERE/'speed-lock.js'),read(HERE/'armory.js'),read(HERE/'interceptors.js'),read(HERE/'equipment-apex.js'),read(HERE/'rotary-advanced.js'),read(HERE/'fire-support-advanced.js'),read(HERE/'sniper-watch.js'),read(HERE/'equipment-upgrades.js'),read(HERE/'weapon-audio.js'),read(HERE/'arsenal-art.js'),read(HERE/'arsenal.js'),
-        read(HERE/'air-wing.js'),read(HERE/'air-impact-art.js'),read(HERE/'air-fire-art.js'),read(HERE/'air-wing-art.js'),read(HERE/'equipment-engraving.js'),read(HERE/'equipment-detail.js'),read(HERE/'equipment-tier-art.js'),read(HERE/'armory-art.js'),read(HERE/'challenge-banner.js'),read(HERE/'simulation-controls.js'),read(HERE/'operations-view.js'),read(HERE/'world-almanac.js'),
+        read(HERE/'air-wing.js'),read(HERE/'air-impact-art.js'),read(HERE/'air-fire-art.js'),read(HERE/'air-wing-art.js'),read(HERE/'air-support-r4-art.js'),read(HERE/'equipment-engraving.js'),read(HERE/'equipment-detail.js'),read(HERE/'equipment-tier-art.js'),read(HERE/'armory-art.js'),read(HERE/'challenge-banner.js'),read(HERE/'simulation-controls.js'),read(HERE/'operations-view.js'),read(HERE/'world-almanac.js'),
         read(HERE/'fx-settings.js'),read(HERE/'holo-impact.js'),combat])
+
+def choose_runtime(classic, modified):
+    return f'if({CLASSIC_ENABLED}){{\n{classic}\n}}else{{\n{modified}\n}}'
+
+def settings_runtime(classic):
+    return (read(HERE/'compatibility-mode.js')
+            .replace('/*MODE_KEY*/null',literal(CLASSIC_KEY))
+            .replace('/*CLASSIC*/false',literal(classic)))
+
+def local_desktop(source):
+    # Save migration runs in the desktop shell, before either gameplay runtime starts.
+    source=fairplay.once(source,'var e=w.localStorage.getItem(Bi);if(e==null){e=w.localStorage.getItem("PvZ2_Settings");if(e!=null)w.localStorage.setItem(Bi,e)}var i=JSON.parse(e);',
+                'var e=w.localStorage.getItem(Bi),i=JSON.parse(e);')
+    start=source.index('t.showUpdates=function()')
+    stop=source.index(',l.updates=function()',start)
+    source=source[:start]+'t.showUpdates=async function(){gardenBetaNotice.open(B.currentLanguage===W.ZH)}'+source[stop:]
+    start=source.index('t.fetchForUpdate=function()')
+    stop=source.index(',l.start=function()',start)
+    return source[:start]+'t.fetchForUpdate=function(){gardenBetaNotice.first(B.currentLanguage===W.ZH)}'+source[stop:]
+
+def classic_main(source):
+    # Existing slot data, pending campaign rewards and fair-play restrictions are shared.
+    source=fairplay.once(source,'seedAncientEgypt(e.currentPlayer);var u=new Date','var u=new Date')
+    helpers=read(HERE/'beta-notice.js')+'\n'+settings_runtime(True)
+    return '(function(){\n'+helpers+'\n'+fx_settings.apply(local_desktop(source))+'\n})();'
 
 def attach(source, helpers):
     import stats, functional
@@ -106,16 +134,10 @@ def attach(source, helpers):
                 'Z.gameStart(),this.gameStarted=!0,gardenEconomy.start(this,ta,me.currentPlayer),A.component.gameStart()')
     source=once(source,'this.saveDangerroomMiniGamePlayerProperties(!0),me.savePP()}},c.spawnPrize',
                 'this.saveDangerroomMiniGamePlayerProperties(!0),me.savePP(),gardenEconomy.win(this)}},c.spawnPrize')
-    # The desktop save chooser inherits players and settings together before Cocos starts.
-    source=once(source,'var e=w.localStorage.getItem(Bi);if(e==null){e=w.localStorage.getItem("PvZ2_Settings");if(e!=null)w.localStorage.setItem(Bi,e)}var i=JSON.parse(e);',
-                'var e=w.localStorage.getItem(Bi),i=JSON.parse(e);')
-    source=source.replace('PvZ2_Greenhouse_Settings_v1','PvZ2_Snowline_PublicBeta_01_Settings')
-    start=source.index('t.showUpdates=function()')
-    stop=source.index(',l.updates=function()',start)
-    source=source[:start]+'t.showUpdates=async function(){gardenBetaNotice.open(B.currentLanguage===W.ZH)}'+source[stop:]
-    start=source.index('t.fetchForUpdate=function()')
-    stop=source.index(',l.start=function()',start)
-    source=source[:start]+'t.fetchForUpdate=function(){gardenBetaNotice.first(B.currentLanguage===W.ZH)}'+source[stop:]
+    import ultimate_r4, titan_core
+    source=ultimate_r4.apply(source)
+    source=titan_core.apply(source)
+    source=local_desktop(source)
     bootstrap="""
     let launched=false;
     const greenhouseInit=setInterval(async()=>{
@@ -135,7 +157,7 @@ def attach(source, helpers):
         report.textContent='升阶温室加载失败：'+(error?.message||error);report.style.cssText='z-index:10000;position:fixed;top:0;background:#ffeecb;color:#57331a;padding:6px';document.body.append(report)}
     },150);
     """
-    return '(function(){\n'+helpers+'\n'+source+'\n'+bootstrap+'\n})();'
+    return '(function(){\n'+helpers+'\n'+settings_runtime(False)+'\n'+source+'\n'+bootstrap+'\n})();'
 
 def build(preview=False, regenerate=True):
     target=WORK/'qa'/'preview' if preview else REPLACEMENTS
@@ -154,8 +176,8 @@ def build(preview=False, regenerate=True):
             dst.write_text(compat_boot(raw,read(HERE/'save-choice.js')),encoding='utf8',newline='\n')
             continue
         code=fairplay.transform(path,raw).replace(OLD_KEY,NEW_KEY)
-        if path==fairplay.MAIN:code=attach(code,helpers)
-        if path==speed.ENGINE:code=speed.timestep(code)
+        if path==fairplay.MAIN:code=choose_runtime(classic_main(code),attach(code,helpers))
+        if path==speed.ENGINE:code=choose_runtime(code,speed.timestep(code))
         code=code.replace('PvZ2_Greenhouse_', 'PvZ2_Snowline_PublicBeta_01_')
         if path==fairplay.BOOT:
             code=fairplay.once(code,'Wr();export{',read(HERE/'save-choice.js')+'\nstartSnowlineWithProgress(Wr);export{')

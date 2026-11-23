@@ -48,6 +48,16 @@ def apply(source):
             part=once(part,'if(this.dealDamage(a),this.poison.duration-=t,','if(this.poison._gardenPlantDamage&&gardenPlantCritical.mark(a),this.dealDamage(a),this.poison.duration-=t,')
             part=once(part,'t.setPoison(i.poison.DPS,i.poison.duration,!0)','gardenPlantCritical.poison(t,i.poison._gardenPlantDamage,[i.poison.DPS,i.poison.duration,true])')
             part=once(part,'i.dealDamage(r.replaceDamage(t*e.DPS))','i.dealDamage(gardenPlantCritical.poisonPacket(r.replaceDamage(t*e.DPS),e))')
+            # These are the two orientations of Chili Bean's delayed mint poison.
+            # The plant already scaled the DPS for its simulation before this tween.
+            chili='n.isValid()&&i.setPoison(e.DPS,e.duration),i.setChiliStun(t)'
+            if part.count(chili)!=2:raise ValueError('Expected both Chili Bean poison directions')
+            part=part.replace(chili,'n.isValid()&&gardenPlantCritical.poison(i,true,[e.DPS,e.duration]),i.setChiliStun(t)')
+        if name=='Square':
+            # Only Electric Currant calls LnC.setElectricLine. The tile's reused
+            # template is copied per victim, with its native use of the strongest line.
+            part=once(part,'this.electricHitCD=.25;var a=new D(1,!0,!0,!0,null,F.electricity);',
+                'this.electricHitCD=.25;var a=gardenPlantCritical.mark(new D(1,!0,!0,!0,null,F.electricity),"electriccurrant");')
         if name=='Tomb':
             part=once(part,'l.dealDamage=function(t){var e=this.health+0;','l.dealDamage=function(t){t=gardenPlantCritical.resolve(this,t);var e=this.health+0;')
         # The outermost damage pass rolls for this victim. Forwarded leftovers and

@@ -36,14 +36,25 @@ const gardenModes = (() => {
     triple:'每次普通射击同时贯穿本行和上下相邻行；只要三行任一行有可击中的僵尸或墓碑即可开火，每行均造成完整普通激光伤害。',
     rapid:'普通激光射速额外提高 500%，即原射速的 6 倍。此倍率与升阶、全园攻速相乘。'
   };
+  const producers=new Set('sunflower twinsunflower sunshroom primalsunflower moonflower shinevine goldbloom solartomato goldleaf sunbean moonbean solarsage toadstool enlightenmint marigold'.split(' '));
+  const solarYields=[1,1.25,1.45,1.70,3];
+  const solarRoles=['日照丰收','光幕救护','日冕拦截'];
+  function solarFactor(rank,id,index){
+    if(rank!==6||!producers.has(id))return 1;
+    const slot=index??gardenChallenge.equippedMode(id)??gardenEconomy.mode(id);
+    const level=gardenChallenge.mastery(id,slot)??gardenEconomy.mastery(id,slot);
+    return solarYields[level]??1;
+  }
   const entries = new Map();
   for(const line of MODE_DATA.trim().split('\n')){
     const [id,...encoded]=line.trim().split(/\s+/);
-    const options=encoded.map(item=>{
+    const options=encoded.map((item,index)=>{
       const [name,route,effect]=item.split('/');
       const detail=effects[effect];
       const description=route==='laser'?laser[effect]:'随本株升阶主招发动。'+routes[route]+(detail?(route==='bounty'?'攻击效果为':'，效果为')+detail+'。':'');
-      return Object.freeze({name,route,effect,description});
+      const solar=producers.has(id)?index:null;
+      const note=solar==null?'':' 此模式的产阳专精为「'+solarRoles[solar]+'」。';
+      return Object.freeze({name,route,effect,solar,description:description+note});
     });
     entries.set(id,Object.freeze(options));
   }
@@ -186,6 +197,6 @@ const gardenModes = (() => {
       }
     }
   }
-  return Object.freeze({options,speedFactor,cast});
+  return Object.freeze({options,speedFactor,cast,solarFactor,solarYield:level=>solarYields[level]??1});
 })();
 

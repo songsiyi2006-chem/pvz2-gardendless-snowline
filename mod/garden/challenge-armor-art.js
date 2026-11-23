@@ -312,6 +312,7 @@ const gardenChallengeArmorArt=(()=>{
   function sync(z){
     if(!cc||!z?.node?.isValid)return;
     const s=state(z);let e=wearers.get(z);
+    if(z._gardenTitan){if(e)forget(z,e);return;}
     if(!s||z.dead||z.hypnotized){if(e)e.root.active=false;return;}
     if(!s.camouflage&&s.helmet.hp<=0&&s.vest.hp<=0&&!(s.door?.hp>0)){if(e)forget(z,e);return;}
     if(!e||e.base!==z.db?.node||!e.root.isValid||e.suit!==s){

@@ -72,6 +72,9 @@ const gardenChallengeHybrids=(()=>{
     if(!listeners.size)return;
     const event={type,z:r.z,kind:r.kind,phase:r.phase,stage:r.stage,target:r.target,aim:r.aim,
       spent:r.spent,index:r.index,rage:r.rage,duration:r.duration,...extra};
+    // Behavior deadlines use the attacker's clock; the art samples real game seconds.
+    event.duration/=r.attackRate;
+    if(Number.isFinite(event.scheduledAt))event.scheduledAt/=r.attackRate;
     for(const listener of listeners)listener(event);
   }
   function phase(r,name,seconds,target=null,extra={}){
@@ -160,7 +163,9 @@ const gardenChallengeHybrids=(()=>{
       mod('NodePools').destroyPooly(z.node);return false;
     }
     if(!s.ordinary&&!gardenChallengeArmor.state(z))return false;
-    const r={kind,z,run:s,phase:'idle',progress:0,target:null,aim:null,spent:0,index:0,rage:false,stage:0,left:0,duration:0,
+    const isPlant=originals.includes(kind)||s.behaviors.get(kind)===roster();
+    const attackRate=!s.ordinary&&isPlant?2**gardenChallenge.activeTyrant(s.level):1;
+    const r={kind,z,run:s,attackRate,phase:'idle',progress:0,target:null,aim:null,spent:0,index:0,rage:false,stage:0,left:0,duration:0,
       cooldown:kind==='prism'||kind==='gatling'?0:1.1+(s.seen.size%3)*.45,cycles:0};
     release(z);z._gardenHybridKind=kind;identities.set(z,r);s.members.set(z,r);s.seen.add(kind);s.lastKind=kind;
     // Native lane spacing can accumulate many cells while the regular surge is loading.
@@ -247,7 +252,7 @@ const gardenChallengeHybrids=(()=>{
     return list.sort((a,b)=>density(b)-density(a))[0];
   }
   function prismAttack(r){
-    const now=r.run.clock;
+    const now=r.run.clock*r.attackRate;
     if(r.phase==='idle'||r.phase==='recovery'){
       if(r.cooldown>0)return;
       const p=targets(r.z,4)[0]||allPlants()[0];
@@ -272,7 +277,7 @@ const gardenChallengeHybrids=(()=>{
     }
   }
   function firePeas(r){
-    const v=r.gatlingVolley,now=r.run.clock,count=r.rage?10:6,cadence=r.rage?.045:.075;
+    const v=r.gatlingVolley,now=r.run.clock*r.attackRate,count=r.rage?10:6,cadence=r.rage?.045:.075;
     if(r.phase==='windup'){
       const stage=r.progress>=.78?3:r.progress>=.43?2:1;
       if(stage!==r.stage){r.stage=stage;emit('charge',r);}
@@ -311,7 +316,7 @@ const gardenChallengeHybrids=(()=>{
       r.cycles++;r.index=0;r.stage=1;r.spent=0;
       const delay=r.kind==='melon'?.78:r.rage?.15:.27;
       phase(r,'windup',delay,p);
-      if(r.kind==='gatling')r.gatlingVolley={next:r.run.clock+delay,fired:0,flights:[]};
+      if(r.kind==='gatling')r.gatlingVolley={next:r.run.clock*r.attackRate+delay,fired:0,flights:[]};
       emit('windup',r);return;
     }
     if(r.kind==='gatling'){firePeas(r);return;}
@@ -345,10 +350,11 @@ const gardenChallengeHybrids=(()=>{
       const moved=r.phase!=='idle'&&r.phase!=='recovery'&&(r.row!==z.lIndex || z.worldPositionX-r.lastX>mod('Square').Square.SquareWidth*.33);
       r.lastX=z.worldPositionX;
       if(disabled||moved){cancel(r,'interrupted');continue;}
-      r.cooldown=Math.max(0,r.cooldown-dt);r.left=Math.max(0,r.left-dt);r.progress=r.duration?1-r.left/r.duration:0;
-      if(originals.includes(r.kind))attack(r);else s.behaviors.get(r.kind)?.cycle?.(z,r,dt,s.api);
+      const actionDt=dt*r.attackRate;
+      r.cooldown=Math.max(0,r.cooldown-actionDt);r.left=Math.max(0,r.left-actionDt);r.progress=r.duration?1-r.left/r.duration:0;
+      if(originals.includes(r.kind))attack(r);else s.behaviors.get(r.kind)?.cycle?.(z,r,actionDt,s.api);
     }
   }
   function coverage(level){const s=sessions.get(level);return s?{seen:[...s.seen],planned:s.localPlan|| (s.flags>=2?[...s.order,'prism']:s.flags?s.order.filter(k=>opensAt(k)===1):[]),sent:s.sent,pending:Number(!!s.inFlight),flags:s.flags}:null;}
-  return Object.freeze({tick,wave,state,baseProps,judgeWaves,holdVictory,release,allegiance,coverage,subscribe(fn){listeners.add(fn);return ()=>listeners.delete(fn);}});
+  return Object.freeze({tick,wave,state,baseProps,judgeWaves,holdVictory,isWaveVictory:level=>waveJudges.has(level),release,allegiance,coverage,subscribe(fn){listeners.add(fn);return ()=>listeners.delete(fn);}});
 })();

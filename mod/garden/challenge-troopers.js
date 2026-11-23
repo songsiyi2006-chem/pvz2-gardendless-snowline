@@ -80,7 +80,7 @@ const gardenChallengeTroopers=(()=>{
   }
   function blocked(z,packet){
     const b=packet?._gardenBlast||currentBlast;
-    if(!b||packet?._gardenArtillery||z.hypnotized||!z._gardenChallengeHostile)return false;
+    if(!b||packet?._gardenArtillery||packet?._gardenOverhead||z.hypnotized||!z._gardenChallengeHostile)return false;
     const guard=closest(b.items,z.lIndex,b.x,z.worldPositionX);
     if(guard&&guard!==z)return true;
     const width=get('Square').Square.SquareWidth;

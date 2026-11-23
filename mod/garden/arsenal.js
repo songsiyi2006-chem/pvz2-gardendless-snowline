@@ -95,6 +95,26 @@ const gardenArsenal = (() => {
     // rewards. Add only the ash plume, after the engine confirms the kill.
     if(z.dead&&!mark.played&&scene&&scene===current&&gardenFxSettings.enabled)gardenArsenalArt.emit(scene,'rotary-ash',where);
   }
+  function airStrike(z,shot){
+    if(!heavyTarget(z)||(!shot.area&&camouflaged(z)))return false;
+    const damage=Math.round(shot.damage*(shot.area&&camouflaged(z)?.2:1));
+    const packet=new lib.cm.ZombieDamageDetails(damage,shot.kind!=='pierce',false,false,null,shot.explosive?1:0,true,false);
+    packet._gardenHitKind=shot.kind;
+    if(shot.explosive)packet._gardenExplosive=true;
+    if(shot.screen)packet._gardenBlast=shot.screen;
+    if(shot.overhead)packet._gardenOverhead=true;
+    if(!z.tombInLnC){
+      if(gardenChallengeTroopers.blocked(z,packet))return false;
+      if(shot.soften)gardenChallengeArmor.suppress(z,3,shot.soften);
+      if(shot.wear)gardenChallengeArmor.fracture(z,shot.wear);
+    }
+    z.dealDamage(packet);
+    return true;
+  }
+  function airScreen(s){
+    const origin=s.square.getSquareWorldPosition(0,0).x-s.square.SquareWidth;
+    return gardenChallengeTroopers.snapshot({worldPositionX:origin},0);
+  }
   function paint(s,kind,a,b){
     if(typeof gardenWeaponAudio!=='undefined')gardenWeaponAudio.play(s,kind);
     if(gardenFxSettings.enabled)gardenArsenalArt.emit(s,kind,a,b);
@@ -828,7 +848,7 @@ const gardenArsenal = (() => {
     if(gear.has('airwing')){
       const inRound=()=>current===s&&lib.level.component===l&&!l.gameWon&&!l.gameLost&&!l.gameOver;
       gardenAirWing.attach(s,{current:inRound,live:()=>inRound()&&liveBattle(),sun:()=>lib.sun.component,targets:heavyTargets,area:blastArea,
-        hit,blastHit,point,row,dense,byHouse,stun,chill,alive:heavyTarget});
+        strike:airStrike,screen:airScreen,point,row,dense,byHouse,stun,chill,alive:heavyTarget});
     }
     if(typeof gardenWeaponAudio!=='undefined')gardenWeaponAudio.prepare(gear);
     // Paid emergency defences are armed immediately; periodic production waits its complete first cycle.
@@ -844,6 +864,7 @@ const gardenArsenal = (() => {
     const s=current?.level===lib.level.component&&current.manager===manager?current:init(lib.level.component,manager);
     if(typeof gardenWorldVeterans!=='undefined')gardenWorldVeterans.tick(lib.level.component,dt);
     if(typeof gardenChallengeHybrids!=='undefined')gardenChallengeHybrids.tick(lib.level.component,dt);
+    if(typeof gardenTitan!=='undefined')gardenTitan.tick(lib.level.component,dt);
     if(typeof gardenAirRaid!=='undefined')gardenAirRaid.tick(lib.level.component,dt);
     if(typeof gardenFieldSupport!=='undefined')gardenFieldSupport.tick(lib.level.component,dt);
     if(!s.gear.size)return;

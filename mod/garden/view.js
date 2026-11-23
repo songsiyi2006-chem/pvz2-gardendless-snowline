@@ -135,7 +135,7 @@ function mountGarden() {
     displayedLayers=layers;
     const pct=n=>Number((n*100).toFixed(2))+'%';
     totalBadge.textContent='全队培养 '+layers+' 层';totalBadge.hidden=chooser;
-    training.textContent='全队培养 '+layers+' 层 · 攻速 +'+pct(layers*gardenTrainingSpeed)+' · 生命 +'+pct(layers*.03);
+    training.textContent='全队培养 '+layers+' 层 · 行动速度 +'+pct(layers*gardenTrainingSpeed)+' · 生命 +'+pct(layers*gardenTrainingHealth)+' · 暴击倍率 +'+(layers*gardenTrainingCrit).toFixed(2);
     if(!p)return;
     const rank=gardenEconomy.rank(p.id), has=gardenEconomy.owns(owner,p.id), points=gardenEconomy.read(owner).points;
     displayedRank=rank;
@@ -163,10 +163,12 @@ function mountGarden() {
     for(const stat of root.querySelectorAll("[data-stat]")){
       const key=stat.dataset.stat;
       stat.parentNode.firstChild.textContent=(labels?.[key]||{damage:'伤害',attackSpeed:'攻速',health:'生命'}[key])+' ';
-      stat.textContent="+"+pct(bonuses[stat.dataset.stat]-1);
+      const solar=key==='damage'&&labels?.damage==='单颗阳光'?bonuses.solarFactor:1;
+      stat.textContent="+"+pct(bonuses[key]*solar-1);
     }
-    critLine.textContent='伤害暴击 '+Math.round((bonuses.critChance??.05)*100)+'% ×'+(bonuses.critMultiplier??1.5).toFixed(1);
-    critLine.title='植物的伤害命中可暴击。F-22 供能侦察使暴击率增加 12 个百分点，攻击及行动速度提高 15%。';
+    const airAura=gardenAirWing.plantAura();
+    critLine.textContent='伤害暴击 '+Math.round((bonuses.critChance??.05)*100)+'% ×'+((bonuses.critMultiplier??1.5)+airAura.critBonus).toFixed(2);
+    critLine.title='F22 供能时，全园共享 12 个百分点的暴击率和 15% 行动速度。每架再增加 2% 植物伤害、0.05 暴击倍率和 0.5% 碎甲。碎甲上限通常为 5%，铁血枭雄（噩梦）为 12%。';
     const notes=typeof gardenFunctional!=='undefined' ? gardenFunctional.summary(p.id) : '';
     convert.textContent=notes||'';convert.hidden=chooser||!notes;
     const tier=p.tiers[preview];

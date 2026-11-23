@@ -1,5 +1,5 @@
-装甲雪线与庭院工坊 0.1 · 第 2 次发布
-Snowline Garden 0.1 · Revision 2
+装甲雪线与庭院工坊 0.2 · 铁血枭雄与噩梦
+Snowline Garden 0.2 · Iron Tyrant and Nightmare
 
 1. 完整解压补丁，保留同目录中的 mod 文件夹、compatibility.py、compatibility-data.json。
 2. 双击 Snowline-Patch.exe，选择自己的原版 Windows 游戏，并为输出选择新的文件名。
@@ -24,10 +24,16 @@ Lite 使用 AVIF 贴图，需要支持 AVIF 的 WebView2。Lite needs a WebView2
 0.16.24 标准版原文件 / Reference original 0.16.24 Standard, SHA-256
 02f0bf4dcf17bc6afa09ce8e752ebd162dc6b06555dc981f56693fdb5e172624
 同一标准版原文件生成的游戏 / Reference output for that Standard executable, SHA-256
-c55fd21894b0591d0c4d8d1eb70983e93c34a76c936141308d5eb3cc3f6cf048
+f4308623abd73d32649d38c084cb7c603fcd35d9aa849a48252dbbf7889376ec
 
-中英图解指南、实机宣传片与校验值 / Illustrated guide, gameplay trailer and checksums
-https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/tag/v0.1-r2
+0.2 中文挑战手册、实机宣传片与校验值 / 0.2 Chinese challenge guide, gameplay trailer and checksums
+https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases/tag/v0.2
+
+历史补丁 / Version history
+https://github.com/songsiyi2006-chem/pvz2-gardendless-snowline/releases
+
+本版详细升级 / Detailed changes
+docs/CHANGELOG-0.2.md · docs/CHANGELOG-0.2.en.md
 
 感谢原作者 / Gardendless creators
 https://github.com/Gzh0821/pvzg_site
